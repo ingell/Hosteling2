@@ -1,4 +1,5 @@
 import { Button } from "./ui/button";
+import * as React from "react";
 
 interface FilterTabsProps {
   categories: string[];
@@ -6,7 +7,11 @@ interface FilterTabsProps {
   onCategoryChange: (category: string) => void;
 }
 
-export function FilterTabs({ categories, activeCategory, onCategoryChange }: FilterTabsProps) {
+export function FilterTabs({
+  categories,
+  activeCategory,
+  onCategoryChange,
+}: FilterTabsProps) {
   return (
     <div className="flex flex-wrap gap-2 justify-center">
       {categories.map((category) => (
