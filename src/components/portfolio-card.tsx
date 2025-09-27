@@ -1,5 +1,6 @@
 import { Card, CardContent } from "./ui/card";
 import { Badge } from "./ui/badge";
+import * as React from "react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 interface PortfolioCardProps {
@@ -10,7 +11,13 @@ interface PortfolioCardProps {
   category: string;
 }
 
-export function PortfolioCard({ title, description, image, tags, category }: PortfolioCardProps) {
+export function PortfolioCard({
+  title,
+  description,
+  image,
+  tags,
+  category,
+}: PortfolioCardProps) {
   return (
     <Card className="group overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
       <div className="aspect-[4/3] overflow-hidden">
