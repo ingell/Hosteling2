@@ -468,7 +468,7 @@ export function SignupFlow({ onComplete, onBack }: SignupFlowProps) {
                     <span className="text-2xl">✓</span>
                   </div>
                   <div>
-                    <h1>Welcome to VolunteerStay!</h1>
+                    <h1>Welcome to Hosteling!</h1>
                     <p className="text-muted-foreground">
                       Your profile is complete. Start browsing volunteer
                       opportunities now.
