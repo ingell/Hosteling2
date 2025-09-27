@@ -109,7 +109,7 @@ export default function App() {
       LocalStorageManager.addNotification({
         type: "system",
         title: "Welcome back!",
-        message: `Welcome back to VolunteerStay, ${
+        message: `Welcome back to Hosteling, ${
           storedUserData.type === "volunteer"
             ? (storedUserData.profile as VolunteerProfile).firstName
             : (storedUserData.profile as HostelProfile).contactFirstName
@@ -140,7 +140,7 @@ export default function App() {
     // Add welcome notification
     LocalStorageManager.addNotification({
       type: "system",
-      title: "Welcome to VolunteerStay!",
+      title: "Welcome to Hosteling!",
       message: `Your ${type} account has been created successfully. Start exploring opportunities!`,
       priority: "high",
     });
@@ -277,7 +277,7 @@ export default function App() {
                 <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl">VolunteerStay</span>
+                <span className="text-xl">Hosteling</span>
               </div>
               <nav className="hidden md:flex space-x-8">
                 <Button
@@ -321,7 +321,7 @@ export default function App() {
                 <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
-                <span className="text-xl">VolunteerStay</span>
+                <span className="text-xl">Hosteling</span>
               </div>
               <nav className="hidden md:flex space-x-8">
                 <Button
@@ -362,7 +362,7 @@ export default function App() {
               <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                 <Users className="w-5 h-5 text-white" />
               </div>
-              <span className="text-xl">VolunteerStay</span>
+              <span className="text-xl">Hosteling</span>
             </div>
             <nav className="hidden md:flex space-x-8">
               <Button
@@ -446,7 +446,7 @@ export default function App() {
       <section className="py-20 px-4">
         <div className="max-w-7xl mx-auto">
           <div className="text-center space-y-4 mb-16">
-            <h2>How VolunteerStay works</h2>
+            <h2>How Hosteling works</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
               Simple, free, and direct. No middleman, no fees, just authentic
               connections between travelers and hostels.
@@ -602,7 +602,7 @@ export default function App() {
                 <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-primary-foreground" />
                 </div>
-                <span className="text-lg">VolunteerStay</span>
+                <span className="text-lg">Hosteling</span>
               </div>
               <p className="text-muted-foreground text-sm">
                 Connecting volunteers with hostels worldwide. Travel more, spend
@@ -638,7 +638,7 @@ export default function App() {
             </div>
           </div>
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 VolunteerStay. All rights reserved.
+            © 2024 Hosteling. All rights reserved.
           </div>
         </div>
       </footer>
