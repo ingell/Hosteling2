@@ -3,7 +3,12 @@ name: Deploy Vite app to GitHub Pages
 on:
   push:
     branches:
-      - main # or your default branch name
+      - main
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
 
 jobs:
   build:
@@ -27,5 +32,5 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./build # <-- change this from ./dist to ./build
-          cname: hostelingapp.com # ensures your custom domain works
+          publish_dir: ./build # Vite output folder
+          cname: hostelingapp.com
