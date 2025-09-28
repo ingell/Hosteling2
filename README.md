@@ -1,4 +1,4 @@
-# Design Showcase Page
+# Hosteling
 
 This is the thid draw of Hosteling app, website version
 
@@ -7,4 +7,5 @@ This is the thid draw of Hosteling app, website version
 Run `npm i` to install the dependencies.
 
 Run `npm run dev` to start the development server.
+
 # Hosteling2
