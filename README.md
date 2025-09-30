@@ -26,6 +26,5 @@ For detailed deployment information and troubleshooting, see [DEPLOYMENT.md](./D
 If the website works locally but not on your custom domain:
 1. ✅ Relative asset paths configured in `vite.config.ts` with `base: './'`
 2. ✅ CNAME file in `public/` directory
-3. ✅ `.nojekyll` file in `public/` directory (disables Jekyll processing, fixes MIME type issues)
-4. ✅ SPA routing support via 404.html
-5. ✅ Clean .gitignore to avoid committing build artifacts
+3. ✅ SPA routing support via 404.html
+4. ✅ Clean .gitignore to avoid committing build artifacts
