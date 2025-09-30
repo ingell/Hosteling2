@@ -33,17 +33,7 @@ hostelingapp.com
 
 **Why this fixes it**: Vite automatically copies everything in the `public/` directory to the build output. This ensures the CNAME file is always present in deployments, not just when the GitHub Action adds it.
 
-#### 3. Disable Jekyll Processing (`public/.nojekyll`)
-Created an empty `public/.nojekyll` file.
-
-**Why this fixes it**: GitHub Pages uses Jekyll by default to process static sites. Jekyll can cause issues with:
-- Files/directories starting with underscores (like `_app` or `_next`)
-- Certain asset types being served with incorrect MIME types
-- Module scripts failing with "application/octet-stream" MIME type errors
-
-The `.nojekyll` file disables Jekyll processing, ensuring all built assets are served correctly with proper MIME types.
-
-#### 4. SPA Routing Support
+#### 3. SPA Routing Support
 Added two components for client-side routing:
 
 **`public/404.html`**: Redirects any 404 errors to the main app with the path encoded as a query parameter.
@@ -52,7 +42,7 @@ Added two components for client-side routing:
 
 **Why this fixes it**: GitHub Pages returns a real 404 for client-side routes (like `/how-it-works`). The 404.html trick redirects these to index.html which can handle the routing client-side.
 
-#### 5. .gitignore for Clean Repository
+#### 4. .gitignore for Clean Repository
 Created `.gitignore` to exclude:
 - `node_modules/` - Dependencies
 - `build/` - Build output (except for the initial build)
@@ -70,8 +60,7 @@ After deploying the fixes, verify:
 2. **Relative paths**: Check `build/index.html` contains `./assets/` not `/assets/`
 3. **CNAME present**: `build/CNAME` exists and contains your domain
 4. **404.html present**: `build/404.html` exists
-5. **.nojekyll present**: `build/.nojekyll` exists (disables Jekyll)
-6. **Local preview works**: Test the built files locally with a static server
+5. **Local preview works**: Test the built files locally with a static server
 
 ### Deployment Workflow
 
@@ -102,11 +91,6 @@ Visit http://localhost:8080 and test:
 - Images from external sources load
 
 ### Common Issues and Solutions
-
-**Issue**: Module script MIME type error - "Expected a JavaScript module script but the server responded with a MIME type of 'application/octet-stream'"
-- **Check**: `.nojekyll` file exists in build output (`build/.nojekyll`)
-- **Check**: The error references `main.tsx` - this means the source `index.html` is being served instead of the built one
-- **Solution**: The `.nojekyll` file disables Jekyll processing which can interfere with proper MIME types
 
 **Issue**: Assets still show as 404
 - **Check**: Ensure `base: './'` is in `vite.config.ts`
