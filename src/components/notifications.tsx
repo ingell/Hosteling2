@@ -13,13 +13,13 @@ interface NotificationsProps {
   userType: 'volunteer' | 'hostel';
 }
 
-// Mock notifications data
-const mockNotifications = [
+// Sample notification structure - in real app this would come from backend
+const getSampleNotifications = () => [
   {
     id: "1",
     type: "application",
     title: "New Application Received",
-    message: "Sarah Chen applied for the Social Media position at your hostel",
+    message: "A volunteer applied for a position at your hostel",
     timestamp: "2024-11-20T11:30:00Z",
     read: false,
     actionUrl: "/applications/1",
@@ -95,15 +95,15 @@ const mockNotifications = [
 ];
 
 export function Notifications({ onBack, userType }: NotificationsProps) {
-  const [notifications, setNotifications] = useState(mockNotifications);
+  const [notifications, setNotifications] = useState(getSampleNotifications());
   const [filter, setFilter] = useState<'all' | 'unread' | 'important'>('all');
 
   // Load notifications from localStorage on mount
   useEffect(() => {
     const storedNotifications = LocalStorageManager.getNotifications();
     if (storedNotifications.length > 0) {
-      // In a real app, you'd merge stored notifications with mock data
-      console.log("Stored notifications:", storedNotifications);
+      // In a real app, you'd merge stored notifications with sample data
+      setNotifications(storedNotifications);
     }
   }, []);
 

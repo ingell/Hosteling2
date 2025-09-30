@@ -15,8 +15,8 @@ interface BrowseHostelsProps {
   onApply: (hostelId: string) => void;
 }
 
-// Mock hostels data
-const hostelsData = [
+// Sample hostels data - in a real app this would come from API
+const getSampleHostelsData = () => [
   {
     id: "1",
     name: "Nomad's Paradise Bangkok",
@@ -158,7 +158,7 @@ export function BrowseHostels({ onBack, onHostelClick, onApply }: BrowseHostelsP
     );
   };
 
-  const filteredHostels = hostelsData.filter(hostel => {
+  const filteredHostels = getSampleHostelsData().filter(hostel => {
     const matchesSearch = hostel.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          hostel.location.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCountry = selectedCountry === "All Countries" || hostel.country === selectedCountry;

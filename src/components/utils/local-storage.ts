@@ -2,7 +2,7 @@
 
 export interface UserData {
   id: string;
-  type: "volunteer" | "hostel";
+  type: 'volunteer' | 'hostel';
   isLoggedIn: boolean;
   profile: VolunteerProfile | HostelProfile;
   preferences?: any;
@@ -54,14 +54,14 @@ export interface HostelProfile {
   photos: string[];
 }
 
-const STORAGE_KEY = "hosteling_userData";
+const STORAGE_KEY = 'hosteling_userData';
 
 export class LocalStorageManager {
   static saveUserData(userData: UserData): void {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
     } catch (error) {
-      console.error("Error saving user data to localStorage:", error);
+      console.error('Error saving user data to localStorage:', error);
     }
   }
 
@@ -71,19 +71,19 @@ export class LocalStorageManager {
       if (data) {
         const parsed = JSON.parse(data);
         // Convert date strings back to Date objects for availability
-        if (parsed.type === "volunteer" && parsed.profile.availability) {
-          parsed.profile.availability.from = parsed.profile.availability.from
-            ? new Date(parsed.profile.availability.from)
+        if (parsed.type === 'volunteer' && parsed.profile.availability) {
+          parsed.profile.availability.from = parsed.profile.availability.from 
+            ? new Date(parsed.profile.availability.from) 
             : undefined;
-          parsed.profile.availability.to = parsed.profile.availability.to
-            ? new Date(parsed.profile.availability.to)
+          parsed.profile.availability.to = parsed.profile.availability.to 
+            ? new Date(parsed.profile.availability.to) 
             : undefined;
         }
         return parsed;
       }
       return null;
     } catch (error) {
-      console.error("Error loading user data from localStorage:", error);
+      console.error('Error loading user data from localStorage:', error);
       return null;
     }
   }
@@ -100,7 +100,7 @@ export class LocalStorageManager {
     try {
       localStorage.removeItem(STORAGE_KEY);
     } catch (error) {
-      console.error("Error clearing user data from localStorage:", error);
+      console.error('Error clearing user data from localStorage:', error);
     }
   }
 
@@ -118,7 +118,7 @@ export class LocalStorageManager {
   static removeSavedItem(itemId: string): void {
     const userData = this.getUserData();
     if (userData && userData.savedItems) {
-      const savedItems = userData.savedItems.filter((id) => id !== itemId);
+      const savedItems = userData.savedItems.filter(id => id !== itemId);
       this.updateUserData({ savedItems });
     }
   }
@@ -136,7 +136,7 @@ export class LocalStorageManager {
         ...application,
         id: Date.now().toString(),
         appliedDate: new Date().toISOString(),
-        status: "pending",
+        status: 'pending'
       });
       this.updateUserData({ applications });
     }
@@ -155,7 +155,7 @@ export class LocalStorageManager {
         ...message,
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
-        read: false,
+        read: false
       });
       this.updateUserData({ messages });
     }
@@ -169,7 +169,7 @@ export class LocalStorageManager {
   static markMessageAsRead(messageId: string): void {
     const userData = this.getUserData();
     if (userData && userData.messages) {
-      const messages = userData.messages.map((msg) =>
+      const messages = userData.messages.map(msg => 
         msg.id === messageId ? { ...msg, read: true } : msg
       );
       this.updateUserData({ messages });
@@ -184,7 +184,7 @@ export class LocalStorageManager {
         ...notification,
         id: Date.now().toString(),
         timestamp: new Date().toISOString(),
-        read: false,
+        read: false
       });
       // Keep only last 50 notifications
       if (notifications.length > 50) {
@@ -202,7 +202,7 @@ export class LocalStorageManager {
   static markNotificationAsRead(notificationId: string): void {
     const userData = this.getUserData();
     if (userData && userData.notifications) {
-      const notifications = userData.notifications.map((notif) =>
+      const notifications = userData.notifications.map(notif => 
         notif.id === notificationId ? { ...notif, read: true } : notif
       );
       this.updateUserData({ notifications });
@@ -212,7 +212,7 @@ export class LocalStorageManager {
   static getUnreadNotificationCount(): number {
     const userData = this.getUserData();
     if (userData && userData.notifications) {
-      return userData.notifications.filter((notif) => !notif.read).length;
+      return userData.notifications.filter(notif => !notif.read).length;
     }
     return 0;
   }
@@ -220,7 +220,7 @@ export class LocalStorageManager {
   static getUnreadMessageCount(): number {
     const userData = this.getUserData();
     if (userData && userData.messages) {
-      return userData.messages.filter((msg) => !msg.read).length;
+      return userData.messages.filter(msg => !msg.read).length;
     }
     return 0;
   }
