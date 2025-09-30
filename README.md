@@ -1,11 +1,30 @@
 # Hosteling
 
-This is the thid draw of Hosteling app, website version
+This is the third draw of Hosteling app, website version. A platform connecting volunteers with hostels worldwide.
 
 ## Running the code
 
-Run `npm i` to install the dependencies.
+```bash
+# Install dependencies
+npm i
 
-Run `npm run dev` to start the development server.
+# Start development server
+npm run dev
 
-# Hosteling2
+# Build for production
+npm run build
+```
+
+## Deployment
+
+This app is deployed to [hostelingapp.com](https://hostelingapp.com) via GitHub Pages.
+
+For detailed deployment information and troubleshooting, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+
+### Quick Deployment Fix Summary
+
+If the website works locally but not on your custom domain:
+1. ✅ Relative asset paths configured in `vite.config.ts` with `base: './'`
+2. ✅ CNAME file in `public/` directory
+3. ✅ SPA routing support via 404.html
+4. ✅ Clean .gitignore to avoid committing build artifacts
