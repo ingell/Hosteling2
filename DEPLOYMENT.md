@@ -11,7 +11,9 @@ The website built with Vite works perfectly when running locally (`npm run dev`)
 
 2. **Missing CNAME File**: The CNAME file that tells GitHub Pages about your custom domain needs to be in the build output, not just in the GitHub Action.
 
-3. **SPA Routing on GitHub Pages**: Single Page Applications (SPAs) need special handling on GitHub Pages because the server returns 404 for client-side routes.
+3. **Jekyll Processing**: GitHub Pages uses Jekyll by default, which can interfere with JavaScript module files and serve them with incorrect MIME types.
+
+4. **SPA Routing on GitHub Pages**: Single Page Applications (SPAs) need special handling on GitHub Pages because the server returns 404 for client-side routes.
 
 ### Solutions Implemented
 
@@ -33,7 +35,12 @@ hostelingapp.com
 
 **Why this fixes it**: Vite automatically copies everything in the `public/` directory to the build output. This ensures the CNAME file is always present in deployments, not just when the GitHub Action adds it.
 
-#### 3. SPA Routing Support
+#### 3. Disable Jekyll Processing (`public/.nojekyll`)
+Created an empty `public/.nojekyll` file.
+
+**Why this fixes it**: GitHub Pages uses Jekyll by default, which can interfere with JavaScript module files and cause them to be served with incorrect MIME types (e.g., `application/octet-stream` instead of `text/javascript`). The `.nojekyll` file tells GitHub Pages to skip Jekyll processing entirely and serve all files as-is with correct MIME types.
+
+#### 4. SPA Routing Support
 Added two components for client-side routing:
 
 **`public/404.html`**: Redirects any 404 errors to the main app with the path encoded as a query parameter.
@@ -42,7 +49,7 @@ Added two components for client-side routing:
 
 **Why this fixes it**: GitHub Pages returns a real 404 for client-side routes (like `/how-it-works`). The 404.html trick redirects these to index.html which can handle the routing client-side.
 
-#### 4. .gitignore for Clean Repository
+#### 5. .gitignore for Clean Repository
 Created `.gitignore` to exclude:
 - `node_modules/` - Dependencies
 - `build/` - Build output (except for the initial build)
@@ -59,8 +66,9 @@ After deploying the fixes, verify:
 1. **Build succeeds**: `npm run build` completes without errors
 2. **Relative paths**: Check `build/index.html` contains `./assets/` not `/assets/`
 3. **CNAME present**: `build/CNAME` exists and contains your domain
-4. **404.html present**: `build/404.html` exists
-5. **Local preview works**: Test the built files locally with a static server
+4. **.nojekyll present**: `build/.nojekyll` exists (disables Jekyll processing)
+5. **404.html present**: `build/404.html` exists
+6. **Local preview works**: Test the built files locally with a static server
 
 ### Deployment Workflow
 
@@ -108,6 +116,11 @@ Visit http://localhost:8080 and test:
 **Issue**: CSS not loading
 - **Check**: Asset paths in build/index.html are relative (./assets/)
 - **Check**: Browser console for specific errors
+
+**Issue**: JavaScript MIME type errors ("application/octet-stream")
+- **Check**: .nojekyll file exists in build output
+- **Check**: Clear browser cache and hard refresh
+- **Check**: Verify deployment completed successfully on GitHub Pages
 
 ### Additional Resources
 
