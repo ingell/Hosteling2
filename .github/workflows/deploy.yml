@@ -34,4 +34,3 @@ jobs:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./build # Vite output folder
           cname: hostelingapp.com
-          enable_jekyll: false # Disable Jekyll processing to fix MIME type errors
