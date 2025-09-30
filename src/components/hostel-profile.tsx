@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
@@ -6,605 +6,374 @@ import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import {
-  Edit,
-  MapPin,
-  Calendar,
-  Star,
-  Users,
-  Settings,
-  Camera,
-  Globe,
-  Bed,
-  Clock,
-  Wifi,
-  Coffee,
-  X,
+import { LocalStorageManager, UserData } from "./utils/local-storage";
+import { 
+  Edit, MapPin, Phone, Mail, Calendar, Star, Users, Settings, 
+  Camera, Bed, Home, Wifi, Coffee, Utensils, Car, MessageCircle,
+  UserPlus, Building2, Clock
 } from "lucide-react";
 
 interface HostelProfileProps {
   onBack: () => void;
+  onEdit?: () => void;
 }
 
-// Mock hostel data
-const hostelData = {
-  id: "hostel_456",
-  name: "Nomad's Paradise",
-  contactName: "Carlos Mendoza",
-  email: "info@nomadsparadise.com",
-  phone: "+66 2 123 4567",
-  country: "Thailand",
-  city: "Bangkok",
-  address: "123 Backpacker Street, Khao San Road, Bangkok 10200",
-  type: "Backpacker Hostel",
-  totalBeds: 50,
-  establishedYear: 2018,
-  avatar:
-    "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=150&h=150&fit=crop",
-  photos: [
-    "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=400&h=300&fit=crop",
-    "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400&h=300&fit=crop",
-    "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=300&fit=crop",
-  ],
-  description:
-    "Welcome to Nomad's Paradise! We're a vibrant backpacker hostel located in the heart of Bangkok's famous Khao San Road. Our friendly atmosphere and helpful staff make it the perfect base for exploring Thailand. We offer clean, comfortable accommodations and a great social environment where travelers from around the world come together.",
-  amenities: [
-    "Free WiFi",
-    "Breakfast included",
-    "Kitchen access",
-    "Laundry",
-    "Common room",
-    "Garden/Terrace",
-    "Tours",
-    "24/7 reception",
-  ],
-  languages: ["English", "Thai", "Spanish"],
-  volunteerRoles: ["Reception", "Cleaning", "Social Media", "Tours", "Kitchen"],
-  accommodationType: "Shared dormitory",
-  mealsIncluded: true,
-  wifiIncluded: true,
-  workHoursPerDay: "4-5 hours",
-  minimumStay: "2 weeks",
-  maximumStay: "3 months",
-  joinDate: "August 2023",
-  totalRating: 4.8,
-  reviewCount: 24,
-  totalVolunteersHosted: 45,
-  reviews: [
-    {
-      id: 1,
-      volunteerName: "Sarah Chen",
-      volunteerAvatar:
-        "https://images.unsplash.com/photo-1494790108755-2616b612b4d4?w=40&h=40&fit=crop&crop=face",
-      rating: 5,
-      comment:
-        "Amazing experience! The hostel team was so welcoming and the location is perfect. I helped with social media and learned so much about Thai culture.",
-      date: "1 week ago",
-      skills: ["Social Media", "Photography"],
-    },
-    {
-      id: 2,
-      volunteerName: "Jake Morrison",
-      volunteerAvatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
-      rating: 5,
-      comment:
-        "Great hostel to volunteer at! Carlos and the team are fantastic. The work-life balance was perfect and I met amazing people.",
-      date: "2 weeks ago",
-      skills: ["Reception", "Tours"],
-    },
-    {
-      id: 3,
-      volunteerName: "Emma Rodriguez",
-      volunteerAvatar:
-        "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=40&h=40&fit=crop&crop=face",
-      rating: 4,
-      comment:
-        "Really enjoyed my time here. Good facilities and nice atmosphere. Would definitely recommend to other volunteers!",
-      date: "1 month ago",
-      skills: ["Cleaning", "Kitchen"],
-    },
-  ],
-  currentVolunteers: [
-    {
-      id: 1,
-      name: "Maria Santos",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face",
-      role: "Reception",
-      startDate: "November 1, 2024",
-      endDate: "December 15, 2024",
-      skills: ["Reception", "Spanish", "Marketing"],
-    },
-    {
-      id: 2,
-      name: "Tom Wilson",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-      role: "Social Media",
-      startDate: "October 15, 2024",
-      endDate: "January 15, 2025",
-      skills: ["Social Media", "Photography", "Marketing"],
-    },
-    {
-      id: 3,
-      name: "Lisa Chen",
-      avatar:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=40&h=40&fit=crop&crop=face",
-      role: "Kitchen & Tours",
-      startDate: "November 10, 2024",
-      endDate: "December 20, 2024",
-      skills: ["Kitchen", "Tours", "Chinese"],
-    },
-  ],
-};
-
-export function HostelProfile({ onBack }: HostelProfileProps) {
+export function HostelProfile({ onBack, onEdit }: HostelProfileProps) {
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState("overview");
+
+  useEffect(() => {
+    const data = LocalStorageManager.getUserData();
+    setUserData(data);
+  }, []);
+
+  if (!userData || userData.type !== 'hostel') {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <Card className="w-96">
+          <CardContent className="p-6 text-center">
+            <p className="text-muted-foreground mb-4">No hostel profile found</p>
+            <Button onClick={onBack}>Go Back</Button>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  const profile = userData.profile;
+  const messages = LocalStorageManager.getMessages();
+  const applications = LocalStorageManager.getApplications();
+
+  // Mock amenities icons
+  const amenityIcons: { [key: string]: React.ReactNode } = {
+    'Free WiFi': <Wifi className="w-4 h-4" />,
+    'Breakfast included': <Coffee className="w-4 h-4" />,
+    'Kitchen access': <Utensils className="w-4 h-4" />,
+    'Laundry': <Home className="w-4 h-4" />,
+    'Common room': <Users className="w-4 h-4" />,
+    'Garden/Terrace': <Home className="w-4 h-4" />,
+    'Tours': <Car className="w-4 h-4" />,
+    '24/7 reception': <Clock className="w-4 h-4" />
+  };
 
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <div className="border-b">
+      <div className="border-b bg-white">
         <div className="max-w-6xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between">
             <Button variant="ghost" onClick={onBack}>
-              ← Back to Dashboard
+              ← Back
             </Button>
-            <div className="flex items-center space-x-2">
-              <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4 mr-2" />
-                Settings
-              </Button>
-              <Button
-                variant={isEditing ? "default" : "outline"}
-                size="sm"
-                onClick={() => setIsEditing(!isEditing)}
-              >
-                <Edit className="w-4 h-4 mr-2" />
-                {isEditing ? "Save Changes" : "Edit Profile"}
-              </Button>
-            </div>
+            <Button variant="outline" onClick={onEdit}>
+              <Edit className="w-4 h-4 mr-2" />
+              Edit Profile
+            </Button>
           </div>
         </div>
       </div>
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         {/* Profile Header */}
-        <Card className="mb-8">
-          <CardContent className="p-8">
-            <div className="flex flex-col lg:flex-row items-start lg:items-center space-y-6 lg:space-y-0 lg:space-x-8">
-              <div className="relative">
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-6">
+          <div className="flex flex-col lg:flex-row lg:items-start gap-6">
+            <div className="flex flex-col items-center lg:items-start">
+              <div className="relative mb-4">
                 <Avatar className="w-32 h-32">
-                  <AvatarImage src={hostelData.avatar} alt={hostelData.name} />
-                  <AvatarFallback className="text-2xl">
-                    {hostelData.name.substring(0, 2).toUpperCase()}
+                  <AvatarImage src="https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=150&h=150&fit=crop" />
+                  <AvatarFallback className="text-3xl bg-gradient-to-r from-orange-500 to-yellow-500 text-white">
+                    {profile.hostelName[0]}
                   </AvatarFallback>
                 </Avatar>
-                {isEditing && (
-                  <Button
-                    size="sm"
-                    className="absolute -bottom-2 -right-2 rounded-full w-8 h-8 p-0"
-                  >
-                    <Camera className="w-4 h-4" />
-                  </Button>
-                )}
+                <Button size="sm" variant="outline" className="absolute -bottom-2 -right-2 w-8 h-8 p-0 rounded-full">
+                  <Camera className="w-4 h-4" />
+                </Button>
               </div>
-
-              <div className="flex-1 space-y-4">
-                <div>
-                  <h1 className="text-3xl mb-2">{hostelData.name}</h1>
-                  <div className="flex flex-col space-y-1 text-muted-foreground">
-                    <div className="flex items-center">
-                      <MapPin className="w-4 h-4 mr-1" />
-                      {hostelData.city}, {hostelData.country}
-                    </div>
-                    <div className="flex items-center">
-                      <Calendar className="w-4 h-4 mr-1" />
-                      Established {hostelData.establishedYear}
-                    </div>
-                    <div className="flex items-center">
-                      <Bed className="w-4 h-4 mr-1" />
-                      {hostelData.totalBeds} beds • {hostelData.type}
-                    </div>
+              
+              {/* Photo Gallery */}
+              <div className="grid grid-cols-3 gap-2 w-full max-w-xs">
+                {profile.photos?.slice(0, 3).map((photo, index) => (
+                  <div key={index} className="relative aspect-square rounded-lg overflow-hidden">
+                    <ImageWithFallback
+                      src={photo}
+                      alt={`${profile.hostelName} photo ${index + 1}`}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
-                </div>
-
-                <div className="flex items-center space-x-8">
-                  <div className="text-center">
-                    <div className="text-2xl">
-                      {hostelData.totalVolunteersHosted}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Total Volunteers
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="flex items-center text-2xl">
-                      {hostelData.totalRating}
-                      <Star className="w-5 h-5 ml-1 fill-yellow-400 text-yellow-400" />
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Rating ({hostelData.reviewCount})
-                    </div>
-                  </div>
-                  <div className="text-center">
-                    <div className="text-2xl">
-                      {hostelData.currentVolunteers.length}
-                    </div>
-                    <div className="text-sm text-muted-foreground">
-                      Current Volunteers
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex flex-wrap gap-2">
-                  {hostelData.amenities.slice(0, 4).map((amenity) => (
-                    <Badge
-                      key={amenity}
-                      variant="secondary"
-                      className="text-xs"
-                    >
-                      {amenity}
-                    </Badge>
-                  ))}
-                  {hostelData.amenities.length > 4 && (
-                    <Badge variant="outline" className="text-xs">
-                      +{hostelData.amenities.length - 4} more
-                    </Badge>
-                  )}
-                </div>
+                ))}
               </div>
             </div>
-          </CardContent>
-        </Card>
+            
+            <div className="flex-1">
+              <div className="flex flex-col xl:flex-row xl:items-start justify-between mb-6">
+                <div className="mb-4 xl:mb-0">
+                  <h1 className="text-3xl font-bold mb-2">{profile.hostelName}</h1>
+                  <div className="space-y-2 text-muted-foreground">
+                    <p className="flex items-center">
+                      <MapPin className="w-4 h-4 mr-2" />
+                      {profile.address}, {profile.city}, {profile.country}
+                    </p>
+                    <p className="flex items-center">
+                      <Mail className="w-4 h-4 mr-2" />
+                      {profile.email}
+                    </p>
+                    <p className="flex items-center">
+                      <Phone className="w-4 h-4 mr-2" />
+                      {profile.phone}
+                    </p>
+                  </div>
+                </div>
+                
+                <div className="flex gap-6">
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-orange-600">{applications.length}</p>
+                    <p className="text-sm text-muted-foreground">Applications</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-orange-600">{messages.length}</p>
+                    <p className="text-sm text-muted-foreground">Messages</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-2xl font-bold text-orange-600">{profile.totalBeds || 'N/A'}</p>
+                    <p className="text-sm text-muted-foreground">Total Beds</p>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-muted-foreground mb-4 leading-relaxed">
+                {profile.description || "No description available"}
+              </p>
+              
+              <div className="flex flex-wrap gap-2">
+                {profile.volunteerRoles?.map((role, index) => (
+                  <Badge key={index} variant="secondary" className="bg-orange-100 text-orange-800">
+                    {role}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
 
         {/* Profile Content */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-5">
+        <Tabs defaultValue="overview" className="space-y-6">
+          <TabsList className="grid w-full grid-cols-4">
             <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="volunteers">Current Volunteers</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="photos">Photos</TabsTrigger>
-            <TabsTrigger value="applications">Applications</TabsTrigger>
+            <TabsTrigger value="volunteers">Volunteers</TabsTrigger>
+            <TabsTrigger value="messages">Messages</TabsTrigger>
+            <TabsTrigger value="settings">Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview" className="space-y-6">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>About Our Hostel</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <p className="text-muted-foreground">
-                      {hostelData.description}
-                    </p>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Volunteer Opportunities</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div>
-                      <h4 className="text-sm font-medium mb-2">
-                        Available Roles
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {hostelData.volunteerRoles.map((role) => (
-                          <Badge key={role} variant="outline">
-                            {role}
-                          </Badge>
-                        ))}
-                      </div>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-4 text-sm">
-                      <div>
-                        <span className="font-medium">Work Hours:</span>
-                        <p className="text-muted-foreground">
-                          {hostelData.workHoursPerDay}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="font-medium">Accommodation:</span>
-                        <p className="text-muted-foreground">
-                          {hostelData.accommodationType}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="font-medium">Minimum Stay:</span>
-                        <p className="text-muted-foreground">
-                          {hostelData.minimumStay}
-                        </p>
-                      </div>
-                      <div>
-                        <span className="font-medium">Maximum Stay:</span>
-                        <p className="text-muted-foreground">
-                          {hostelData.maximumStay}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-4 text-sm">
-                      <div className="flex items-center">
-                        {hostelData.mealsIncluded ? (
-                          <Coffee className="w-4 h-4 mr-1 text-green-500" />
-                        ) : (
-                          <X className="w-4 h-4 mr-1 text-red-500" />
-                        )}
-                        Meals{" "}
-                        {hostelData.mealsIncluded ? "Included" : "Not Included"}
-                      </div>
-                      <div className="flex items-center">
-                        {hostelData.wifiIncluded ? (
-                          <Wifi className="w-4 h-4 mr-1 text-green-500" />
-                        ) : (
-                          <X className="w-4 h-4 mr-1 text-red-500" />
-                        )}
-                        WiFi{" "}
-                        {hostelData.wifiIncluded ? "Included" : "Not Included"}
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </div>
-
-              <div className="space-y-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Contact Information</CardTitle>
-                  </CardHeader>
-                  <CardContent className="space-y-3">
-                    <div>
-                      <span className="text-sm font-medium">
-                        Contact Person
-                      </span>
-                      <p className="text-muted-foreground">
-                        {hostelData.contactName}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium">Email</span>
-                      <p className="text-muted-foreground">
-                        {hostelData.email}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium">Phone</span>
-                      <p className="text-muted-foreground">
-                        {hostelData.phone}
-                      </p>
-                    </div>
-                    <div>
-                      <span className="text-sm font-medium">Address</span>
-                      <p className="text-muted-foreground text-sm">
-                        {hostelData.address}
-                      </p>
-                    </div>
-                  </CardContent>
-                </Card>
-
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Amenities</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {hostelData.amenities.map((amenity) => (
-                        <Badge
-                          key={amenity}
-                          variant="secondary"
-                          className="text-xs"
-                        >
-                          {amenity}
-                        </Badge>
+            <div className="grid lg:grid-cols-3 gap-6">
+              {/* Basic Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Building2 className="w-5 h-5 mr-2 text-orange-600" />
+                    Hostel Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Hostel Type</h4>
+                    <p>{profile.hostelType || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Established</h4>
+                    <p>{profile.establishedYear || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Contact Person</h4>
+                    <p>{profile.contactFirstName} {profile.contactLastName}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Languages</h4>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {profile.languages?.map((language, index) => (
+                        <Badge key={index} variant="outline" className="text-xs">{language}</Badge>
                       ))}
                     </div>
-                  </CardContent>
-                </Card>
+                  </div>
+                </CardContent>
+              </Card>
 
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Languages</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex flex-wrap gap-2">
-                      {hostelData.languages.map((language) => (
-                        <Badge
-                          key={language}
-                          variant="outline"
-                          className="text-xs"
-                        >
-                          <Globe className="w-3 h-3 mr-1" />
-                          {language}
-                        </Badge>
-                      ))}
+              {/* Work Information */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <UserPlus className="w-5 h-5 mr-2 text-orange-600" />
+                    Volunteer Information
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Work Hours/Day</h4>
+                    <p>{profile.workHoursPerDay || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Minimum Stay</h4>
+                    <p>{profile.minimumStay || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Maximum Stay</h4>
+                    <p>{profile.maximumStay || "Not specified"}</p>
+                  </div>
+                  <div>
+                    <h4 className="font-medium text-sm text-muted-foreground">Accommodation</h4>
+                    <p>{profile.accommodationType || "Not specified"}</p>
+                  </div>
+                  <div className="space-y-2">
+                    <h4 className="font-medium text-sm text-muted-foreground">Included</h4>
+                    <div className="flex flex-wrap gap-1">
+                      {profile.mealsIncluded && <Badge variant="outline" className="text-xs">Meals</Badge>}
+                      {profile.wifiIncluded && <Badge variant="outline" className="text-xs">WiFi</Badge>}
                     </div>
-                  </CardContent>
-                </Card>
-              </div>
+                  </div>
+                </CardContent>
+              </Card>
+
+              {/* Amenities */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center">
+                    <Star className="w-5 h-5 mr-2 text-orange-600" />
+                    Amenities
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-2 gap-3">
+                    {profile.amenities?.map((amenity, index) => (
+                      <div key={index} className="flex items-center space-x-2 text-sm">
+                        {amenityIcons[amenity] || <Star className="w-4 h-4" />}
+                        <span>{amenity}</span>
+                      </div>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
             </div>
           </TabsContent>
 
           <TabsContent value="volunteers" className="space-y-6">
             <Card>
               <CardHeader>
-                <CardTitle>
-                  Current Volunteers ({hostelData.currentVolunteers.length})
+                <CardTitle>Current & Past Volunteers</CardTitle>
+                <p className="text-muted-foreground">Manage your volunteer applications and reviews</p>
+              </CardHeader>
+              <CardContent>
+                {applications.length === 0 ? (
+                  <div className="text-center py-8">
+                    <Users className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No applications yet</p>
+                    <p className="text-sm text-muted-foreground">Applications from volunteers will appear here</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {applications.map((application, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div className="flex items-center space-x-4">
+                          <Avatar>
+                            <AvatarFallback>V{index + 1}</AvatarFallback>
+                          </Avatar>
+                          <div>
+                            <h4 className="font-medium">Application #{index + 1}</h4>
+                            <p className="text-sm text-muted-foreground">
+                              Applied: {new Date(application.appliedDate).toLocaleDateString()}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <Badge variant={application.status === 'pending' ? 'secondary' : 'default'}>
+                            {application.status}
+                          </Badge>
+                          <Button variant="outline" size="sm">
+                            View
+                          </Button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="messages" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle>Messages</CardTitle>
+                <p className="text-muted-foreground">Communications with volunteers</p>
+              </CardHeader>
+              <CardContent>
+                {messages.length === 0 ? (
+                  <div className="text-center py-8">
+                    <MessageCircle className="w-12 h-12 mx-auto text-muted-foreground mb-4" />
+                    <p className="text-muted-foreground">No messages yet</p>
+                    <p className="text-sm text-muted-foreground">Messages with volunteers will appear here</p>
+                  </div>
+                ) : (
+                  <div className="space-y-4">
+                    {messages.map((message, index) => (
+                      <div key={index} className="flex items-center justify-between p-4 border rounded-lg">
+                        <div>
+                          <h4 className="font-medium">Message #{index + 1}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {new Date(message.timestamp).toLocaleDateString()}
+                          </p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          View
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="settings" className="space-y-6">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Settings className="w-5 h-5 mr-2 text-orange-600" />
+                  Hostel Settings
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
-                {hostelData.currentVolunteers.map((volunteer) => (
-                  <div
-                    key={volunteer.id}
-                    className="flex items-center justify-between p-4 border rounded-lg"
-                  >
-                    <div className="flex items-center space-x-4">
-                      <Avatar>
-                        <AvatarImage
-                          src={volunteer.avatar}
-                          alt={volunteer.name}
-                        />
-                        <AvatarFallback>
-                          {volunteer.name
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <h4 className="font-medium">{volunteer.name}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {volunteer.role}
-                        </p>
-                        <p className="text-xs text-muted-foreground">
-                          {volunteer.startDate} - {volunteer.endDate}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex flex-wrap gap-1 justify-end mb-2">
-                        {volunteer.skills.slice(0, 2).map((skill) => (
-                          <Badge
-                            key={skill}
-                            variant="outline"
-                            className="text-xs"
-                          >
-                            {skill}
-                          </Badge>
-                        ))}
-                      </div>
-                      <Button variant="outline" size="sm">
-                        Message
-                      </Button>
-                    </div>
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Listing Visibility</h4>
+                    <p className="text-sm text-muted-foreground">Control if your hostel appears in search results</p>
                   </div>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="reviews" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>
-                  Reviews from Volunteers ({hostelData.reviewCount})
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {hostelData.reviews.map((review, index) => (
-                  <div key={review.id}>
-                    <div className="flex items-start space-x-4">
-                      <Avatar>
-                        <AvatarImage
-                          src={review.volunteerAvatar}
-                          alt={review.volunteerName}
-                        />
-                        <AvatarFallback>
-                          {review.volunteerName
-                            .split(" ")
-                            .map((n) => n[0])
-                            .join("")}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h4 className="font-medium">
-                              {review.volunteerName}
-                            </h4>
-                            <div className="flex flex-wrap gap-1">
-                              {review.skills.map((skill) => (
-                                <Badge
-                                  key={skill}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {skill}
-                                </Badge>
-                              ))}
-                            </div>
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-4 h-4 ${
-                                    i < review.rating
-                                      ? "fill-yellow-400 text-yellow-400"
-                                      : "text-gray-300"
-                                  }`}
-                                />
-                              ))}
-                            </div>
-                            <span className="text-sm text-muted-foreground">
-                              {review.date}
-                            </span>
-                          </div>
-                        </div>
-                        <p className="text-muted-foreground text-sm">
-                          {review.comment}
-                        </p>
-                      </div>
-                    </div>
-                    {index < hostelData.reviews.length - 1 && (
-                      <Separator className="mt-6" />
-                    )}
-                  </div>
-                ))}
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="photos" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Hostel Photos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {hostelData.photos.map((photo, index) => (
-                    <div
-                      key={index}
-                      className="aspect-square overflow-hidden rounded-lg"
-                    >
-                      <ImageWithFallback
-                        src={photo}
-                        alt={`${hostelData.name} photo ${index + 1}`}
-                        className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                      />
-                    </div>
-                  ))}
-                  {isEditing && (
-                    <div className="aspect-square border-2 border-dashed border-muted rounded-lg flex items-center justify-center">
-                      <Button variant="outline" size="sm">
-                        <Camera className="w-4 h-4 mr-2" />
-                        Add Photo
-                      </Button>
-                    </div>
-                  )}
+                  <Button variant="outline" size="sm">
+                    Manage
+                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="applications" className="space-y-6">
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Applications</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-8 text-muted-foreground">
-                  <Users className="w-12 h-12 mx-auto mb-4 opacity-50" />
-                  <p>No pending applications at the moment.</p>
-                  <p className="text-sm">
-                    Applications from volunteers will appear here.
-                  </p>
+                
+                <Separator />
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium">Notification Preferences</h4>
+                    <p className="text-sm text-muted-foreground">Set how you receive application updates</p>
+                  </div>
+                  <Button variant="outline" size="sm">
+                    Configure
+                  </Button>
+                </div>
+                
+                <Separator />
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h4 className="font-medium text-red-600">Delete Hostel Profile</h4>
+                    <p className="text-sm text-muted-foreground">Permanently remove your hostel from the platform</p>
+                  </div>
+                  <Button variant="destructive" size="sm">
+                    Delete
+                  </Button>
                 </div>
               </CardContent>
             </Card>

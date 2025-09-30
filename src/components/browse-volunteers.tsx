@@ -7,8 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Checkbox } from "./ui/checkbox";
 import { Slider } from "./ui/slider";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
-import { Search, MapPin, Star, Heart, Filter, Users, Clock, Globe, Calendar, ChevronDown, MessageCircle } from "lucide-react";
+import { API } from "./utils/api";
+import { LocalStorageManager } from "./utils/local-storage";
+import { Search, MapPin, Star, Heart, Filter, Users, Clock, Globe, Calendar, ChevronDown, MessageCircle, Send } from "lucide-react";
+import { toast } from "sonner@2.0.3";
 
 interface BrowseVolunteersProps {
   onBack: () => void;
@@ -16,8 +22,8 @@ interface BrowseVolunteersProps {
   onContact: (volunteerId: string) => void;
 }
 
-// Mock volunteers data
-const volunteersData = [
+// Sample volunteers data - in a real app this would come from API
+const getSampleVolunteersData = () => [
   {
     id: "1",
     firstName: "Sarah",
@@ -216,6 +222,12 @@ export function BrowseVolunteers({ onBack, onVolunteerClick, onContact }: Browse
   const [urgentAvailable, setUrgentAvailable] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [favoriteVolunteers, setFavoriteVolunteers] = useState<string[]>([]);
+  const [selectedVolunteer, setSelectedVolunteer] = useState<any>(null);
+  const [requestMessage, setRequestMessage] = useState("");
+  const [requestPosition, setRequestPosition] = useState("");
+  const [requestDuration, setRequestDuration] = useState("");
+  const [requestStartDate, setRequestStartDate] = useState("");
+  const [isSubmittingRequest, setIsSubmittingRequest] = useState(false);
 
   const toggleSkill = (skill: string) => {
     setSelectedSkills(prev => 
@@ -233,7 +245,45 @@ export function BrowseVolunteers({ onBack, onVolunteerClick, onContact }: Browse
     );
   };
 
-  const filteredVolunteers = volunteersData.filter(volunteer => {
+  const handleSendRequest = async () => {
+    if (!selectedVolunteer || !requestMessage.trim()) {
+      toast.error("Please fill in the message field");
+      return;
+    }
+
+    setIsSubmittingRequest(true);
+    try {
+      const userData = LocalStorageManager.getUserData();
+      if (!userData || userData.type !== 'hostel') {
+        toast.error("Only hostels can send volunteer requests");
+        return;
+      }
+
+      await API.sendVolunteerRequest({
+        hostelId: userData.id,
+        hostelName: userData.profile.hostelName,
+        volunteerId: selectedVolunteer.id,
+        volunteerName: `${selectedVolunteer.firstName} ${selectedVolunteer.lastName}`,
+        message: requestMessage,
+        position: requestPosition,
+        duration: requestDuration,
+        startDate: requestStartDate
+      });
+
+      toast.success("Volunteer request sent successfully!");
+      setSelectedVolunteer(null);
+      setRequestMessage("");
+      setRequestPosition("");
+      setRequestDuration("");
+      setRequestStartDate("");
+    } catch (error) {
+      toast.error("Failed to send volunteer request");
+    } finally {
+      setIsSubmittingRequest(false);
+    }
+  };
+
+  const filteredVolunteers = getSampleVolunteersData().filter(volunteer => {
     const matchesSearch = volunteer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          volunteer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          volunteer.location.toLowerCase().includes(searchQuery.toLowerCase());
@@ -527,17 +577,102 @@ export function BrowseVolunteers({ onBack, onVolunteerClick, onContact }: Browse
                     >
                       View Profile
                     </Button>
-                    <Button 
-                      size="sm" 
-                      className="flex-1"
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        onContact(volunteer.id);
-                      }}
-                    >
-                      <MessageCircle className="w-4 h-4 mr-1" />
-                      Contact
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button 
+                          size="sm" 
+                          className="flex-1"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedVolunteer(volunteer);
+                          }}
+                        >
+                          <Send className="w-4 h-4 mr-1" />
+                          Request
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent className="max-w-md">
+                        <DialogHeader>
+                          <DialogTitle>Send Volunteer Request</DialogTitle>
+                        </DialogHeader>
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
+                            <Avatar className="w-10 h-10">
+                              <AvatarImage src={selectedVolunteer?.avatar} />
+                              <AvatarFallback>
+                                {selectedVolunteer ? `${selectedVolunteer.firstName[0]}${selectedVolunteer.lastName[0]}` : 'V'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div>
+                              <p className="font-medium">
+                                {selectedVolunteer ? `${selectedVolunteer.firstName} ${selectedVolunteer.lastName}` : ''}
+                              </p>
+                              <p className="text-sm text-muted-foreground">
+                                {selectedVolunteer?.location}
+                              </p>
+                            </div>
+                          </div>
+                          
+                          <div>
+                            <Label htmlFor="position">Position (Optional)</Label>
+                            <Input
+                              id="position"
+                              placeholder="e.g., Reception, Kitchen Help"
+                              value={requestPosition}
+                              onChange={(e) => setRequestPosition(e.target.value)}
+                            />
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-2">
+                            <div>
+                              <Label htmlFor="duration">Duration</Label>
+                              <Input
+                                id="duration"
+                                placeholder="e.g., 2-4 weeks"
+                                value={requestDuration}
+                                onChange={(e) => setRequestDuration(e.target.value)}
+                              />
+                            </div>
+                            <div>
+                              <Label htmlFor="startDate">Start Date</Label>
+                              <Input
+                                id="startDate"
+                                type="date"
+                                value={requestStartDate}
+                                onChange={(e) => setRequestStartDate(e.target.value)}
+                              />
+                            </div>
+                          </div>
+
+                          <div>
+                            <Label htmlFor="message">Message *</Label>
+                            <Textarea
+                              id="message"
+                              placeholder="Introduce your hostel and explain why you'd like this volunteer to join your team..."
+                              value={requestMessage}
+                              onChange={(e) => setRequestMessage(e.target.value)}
+                              rows={4}
+                              required
+                            />
+                          </div>
+
+                          <div className="flex justify-end gap-2">
+                            <Button 
+                              variant="outline" 
+                              onClick={() => setSelectedVolunteer(null)}
+                            >
+                              Cancel
+                            </Button>
+                            <Button 
+                              onClick={handleSendRequest}
+                              disabled={isSubmittingRequest || !requestMessage.trim()}
+                            >
+                              {isSubmittingRequest ? 'Sending...' : 'Send Request'}
+                            </Button>
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
                   </div>
                 </div>
               </CardContent>

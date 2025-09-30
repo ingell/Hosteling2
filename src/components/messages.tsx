@@ -15,11 +15,11 @@ interface MessagesProps {
   userType: 'volunteer' | 'hostel';
 }
 
-// Mock conversations data
-const mockConversations = [
+// Sample conversation structure - in real app this would come from backend
+const getSampleConversations = () => [
   {
     id: "1",
-    participantName: "Sarah Chen",
+    participantName: "Example User",
     participantAvatar: "https://images.unsplash.com/photo-1494790108755-2616b612b4d4?w=40&h=40&fit=crop&crop=face",
     participantType: "volunteer" as const,
     lastMessage: "Thanks for considering my application! I'm very excited about the opportunity.",
@@ -164,13 +164,12 @@ export function Messages({ onBack, userType }: MessagesProps) {
   const [selectedConversation, setSelectedConversation] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [newMessage, setNewMessage] = useState("");
-  const [conversations, setConversations] = useState(mockConversations);
+  const [conversations, setConversations] = useState(getSampleConversations());
 
   // Load messages from localStorage on mount
   useEffect(() => {
     const storedMessages = LocalStorageManager.getMessages();
     // In a real app, you'd merge stored messages with conversations
-    console.log("Stored messages:", storedMessages);
   }, []);
 
   const filteredConversations = conversations.filter(conv =>

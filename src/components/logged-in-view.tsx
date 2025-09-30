@@ -1,30 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { Button } from "./ui/button";
-import { Input } from "./ui/input";
 import { Badge } from "./ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { VolunteerProfile } from "./volunteer-profile";
 import { HostelProfile } from "./hostel-profile";
+import { EditVolunteerProfile } from "./edit-volunteer-profile";
+import { EditHostelProfile } from "./edit-hostel-profile";
 import { BrowseHostels } from "./browse-hostels";
 import { BrowseVolunteers } from "./browse-volunteers";
 import { Messages } from "./messages";
 import { Notifications } from "./notifications";
+import { VolunteerRequests } from "./volunteer-requests";
 import { LocalStorageManager } from "./utils/local-storage";
+import { API } from "./utils/api";
 import {
   Search,
-  MapPin,
   Star,
   MessageCircle,
   Bell,
-  Settings,
-  User,
   Calendar,
-  Filter,
   Heart,
-  Plus,
   Users,
   BarChart3,
   TrendingUp,
@@ -36,170 +33,20 @@ interface LoggedInViewProps {
   onLogout: () => void;
 }
 
-// Mock data
-const volunteerDashboardData = {
-  user: {
-    name: "Sarah Chen",
-    avatar:
-      "https://images.unsplash.com/photo-1494790108755-2616b612b4d4?w=40&h=40&fit=crop&crop=face",
-    location: "San Francisco, USA",
-    completedVolunteering: 3,
-    rating: 4.8,
-  },
-  currentVolunteering: {
-    hostelName: "Beach Paradise Hostel",
-    location: "Bali, Indonesia",
-    startDate: "Nov 15",
-    endDate: "Dec 15",
-    daysLeft: 18,
-    role: "Social Media & Reception",
-  },
-  savedOpportunities: [
-    {
-      id: 1,
-      name: "Jungle Retreat Lodge",
-      location: "Costa Rica",
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
-      roles: ["Eco Tourism", "Reception"],
-      rating: 4.9,
-      commitment: "2-6 weeks",
-    },
-    {
-      id: 2,
-      name: "Mountain Hostel",
-      location: "Peru",
-      image:
-        "https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=300&h=200&fit=crop",
-      roles: ["Kitchen", "Tours"],
-      rating: 4.7,
-      commitment: "4-8 weeks",
-    },
-  ],
-  recentActivity: [
-    {
-      id: 1,
-      text: "Started volunteering at Beach Paradise Hostel",
-      date: "Nov 15",
-      type: "started",
-    },
-    {
-      id: 2,
-      text: "Received 5-star review from Surf & Stay",
-      date: "Nov 10",
-      type: "review",
-    },
-    {
-      id: 3,
-      text: "Applied to Mountain Hostel in Peru",
-      date: "Nov 5",
-      type: "applied",
-    },
-  ],
-  upcomingOpportunities: [
-    {
-      id: 1,
-      name: "Surf Camp Hostel",
-      location: "Portugal",
-      image:
-        "https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=300&h=200&fit=crop",
-      roles: ["Reception", "Events"],
-      rating: 4.8,
-      commitment: "3-5 weeks",
-      urgent: true,
-    },
-    {
-      id: 2,
-      name: "City Center Backpackers",
-      location: "Berlin, Germany",
-      image:
-        "https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=300&h=200&fit=crop",
-      roles: ["Bar Help", "Tours"],
-      rating: 4.6,
-      commitment: "2-4 weeks",
-      urgent: false,
-    },
-  ],
+// Define the VolunteerRequest type based on the API response structure
+type VolunteerRequest = {
+  id: string;
+  status: string;
+  // Add other fields as needed based on the API response
 };
 
-const hostelDashboardData = {
-  user: {
-    name: "Nomad's Paradise",
-    contactName: "Carlos Mendoza",
-    avatar:
-      "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=40&h=40&fit=crop",
-    location: "Bangkok, Thailand",
-    totalVolunteers: 45,
-    rating: 4.8,
-  },
-  currentVolunteers: [
-    {
-      id: 1,
-      name: "Maria Santos",
-      avatar:
-        "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=40&h=40&fit=crop&crop=face",
-      role: "Reception",
-      endDate: "Dec 15",
-      rating: 5,
-    },
-    {
-      id: 2,
-      name: "Tom Wilson",
-      avatar:
-        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=40&h=40&fit=crop&crop=face",
-      role: "Social Media",
-      endDate: "Jan 15",
-      rating: 5,
-    },
-  ],
-  pendingApplications: [
-    {
-      id: 1,
-      name: "Emma Johnson",
-      avatar:
-        "https://images.unsplash.com/photo-1517841905240-472988babdf9?w=40&h=40&fit=crop&crop=face",
-      skills: ["Kitchen", "Cleaning"],
-      availability: "Dec 1 - Feb 28",
-      rating: 4.9,
-      applied: "2 days ago",
-    },
-    {
-      id: 2,
-      name: "Alex Rivera",
-      avatar:
-        "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=40&h=40&fit=crop&crop=face",
-      skills: ["Reception", "Tours"],
-      availability: "Jan 15 - Mar 15",
-      rating: 4.7,
-      applied: "1 day ago",
-    },
-  ],
-  stats: {
-    totalApplications: 12,
-    responseRate: "95%",
-    averageStay: "6 weeks",
-    repeatVolunteers: "30%",
-  },
-  recentActivity: [
-    {
-      id: 1,
-      text: "New application from Emma Johnson",
-      date: "2 days ago",
-      type: "application",
-    },
-    {
-      id: 2,
-      text: "Tom Wilson extended stay until Jan 15",
-      date: "3 days ago",
-      type: "extension",
-    },
-    {
-      id: 3,
-      text: "Received 5-star review from Sarah Chen",
-      date: "1 week ago",
-      type: "review",
-    },
-  ],
+// Helper function to get user display name
+const getUserDisplayName = (userData: any) => {
+  if (userData.type === "volunteer") {
+    return `${userData.profile.firstName} ${userData.profile.lastName}`;
+  } else {
+    return userData.profile.hostelName;
+  }
 };
 
 export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
@@ -207,23 +54,50 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
   const [activeTab, setActiveTab] = useState("overview");
   const [unreadMessages, setUnreadMessages] = useState(0);
   const [unreadNotifications, setUnreadNotifications] = useState(0);
+  const [userData, setUserData] = useState<any>(null);
+  const [volunteerRequests, setVolunteerRequests] = useState<
+    VolunteerRequest[]
+  >([]);
+
+  // Load user data from localStorage
+  useEffect(() => {
+    const data = LocalStorageManager.getUserData();
+    setUserData(data);
+
+    // Load volunteer requests for current user
+    if (data) {
+      loadVolunteerRequests(data);
+    }
+  }, []);
+
+  const loadVolunteerRequests = async (userData: any) => {
+    try {
+      let requests: VolunteerRequest[] = [];
+      if (userData.type === "volunteer") {
+        requests = await API.getVolunteerRequests(userData.id);
+      } else {
+        requests = await API.getHostelRequests(userData.id);
+      }
+      setVolunteerRequests(requests);
+    } catch (error) {
+      console.error("Failed to load volunteer requests:", error);
+    }
+  };
 
   // Load unread counts from localStorage
   useEffect(() => {
     const messageCount = LocalStorageManager.getUnreadMessageCount();
-    const notificationCount = LocalStorageManager.getUnreadNotificationCount();
+    const notificationCount = API.getUnreadNotificationCount();
     setUnreadMessages(messageCount);
     setUnreadNotifications(notificationCount);
   }, [currentView]);
 
   // Handle browse hostels actions
   const handleHostelClick = (hostelId: string) => {
-    console.log("View hostel details:", hostelId);
     // In a real app, navigate to hostel detail page
   };
 
   const handleApplyToHostel = (hostelId: string) => {
-    console.log("Apply to hostel:", hostelId);
     // Add application to localStorage
     LocalStorageManager.addApplication({
       hostelId,
@@ -244,12 +118,10 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
 
   // Handle browse volunteers actions
   const handleVolunteerClick = (volunteerId: string) => {
-    console.log("View volunteer profile:", volunteerId);
     // In a real app, navigate to volunteer detail page
   };
 
   const handleContactVolunteer = (volunteerId: string) => {
-    console.log("Contact volunteer:", volunteerId);
     // Add message to localStorage
     LocalStorageManager.addMessage({
       recipientId: volunteerId,
@@ -269,11 +141,53 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
   };
 
   if (currentView === "volunteer-profile") {
-    return <VolunteerProfile onBack={() => setCurrentView("dashboard")} />;
+    return (
+      <VolunteerProfile
+        onBack={() => setCurrentView("dashboard")}
+        onEdit={() => setCurrentView("edit-volunteer-profile")}
+      />
+    );
   }
 
   if (currentView === "hostel-profile") {
-    return <HostelProfile onBack={() => setCurrentView("dashboard")} />;
+    return (
+      <HostelProfile
+        onBack={() => setCurrentView("dashboard")}
+        onEdit={() => setCurrentView("edit-hostel-profile")}
+      />
+    );
+  }
+
+  if (currentView === "edit-volunteer-profile") {
+    return (
+      <EditVolunteerProfile
+        onBack={() => setCurrentView("volunteer-profile")}
+        onSave={() => {
+          setCurrentView("volunteer-profile");
+          // Reload user data
+          const data = LocalStorageManager.getUserData();
+          setUserData(data);
+        }}
+      />
+    );
+  }
+
+  if (currentView === "edit-hostel-profile") {
+    return (
+      <EditHostelProfile
+        onBack={() => setCurrentView("hostel-profile")}
+        onSave={() => {
+          setCurrentView("hostel-profile");
+          // Reload user data
+          const data = LocalStorageManager.getUserData();
+          setUserData(data);
+        }}
+      />
+    );
+  }
+
+  if (currentView === "volunteer-requests") {
+    return <VolunteerRequests onBack={() => setCurrentView("dashboard")} />;
   }
 
   if (currentView === "browse-hostels") {
@@ -315,9 +229,16 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
   }
 
   const isVolunteer = userType === "volunteer";
-  const userData = isVolunteer
-    ? volunteerDashboardData.user
-    : hostelDashboardData.user;
+
+  if (!userData) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground mb-4">Loading your profile...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -369,12 +290,21 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                 }
               >
                 <Avatar className="w-6 h-6 mr-2">
-                  <AvatarImage src={userData.avatar} alt={userData.name} />
+                  <AvatarImage
+                    src="https://images.unsplash.com/photo-1494790108755-2616b612b4d4?w=40&h=40&fit=crop&crop=face"
+                    alt={userData ? getUserDisplayName(userData) : ""}
+                  />
                   <AvatarFallback>
-                    {userData.name.substring(0, 2).toUpperCase()}
+                    {userData && getUserDisplayName(userData)
+                      ? getUserDisplayName(userData)
+                          .substring(0, 2)
+                          .toUpperCase()
+                      : "U"}
                   </AvatarFallback>
                 </Avatar>
-                <span className="hidden md:inline">{userData.name}</span>
+                <span className="hidden md:inline">
+                  {userData ? getUserDisplayName(userData) : "User"}
+                </span>
               </Button>
               <Button variant="outline" size="sm" onClick={onLogout}>
                 Logout
@@ -387,9 +317,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-8">
           <h1 className="text-3xl mb-2">
-            Welcome back,{" "}
-            {isVolunteer ? userData.name : hostelDashboardData.user.contactName}
-            !
+            Welcome back, {userData ? getUserDisplayName(userData) : "User"}!
           </h1>
           <p className="text-muted-foreground">
             {isVolunteer
@@ -401,11 +329,12 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
         {/* Volunteer Dashboard */}
         {isVolunteer && (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="opportunities">Browse</TabsTrigger>
               <TabsTrigger value="saved">Saved</TabsTrigger>
               <TabsTrigger value="applications">Applications</TabsTrigger>
+              <TabsTrigger value="requests">Requests</TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="space-y-6">
@@ -416,7 +345,11 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <BarChart3 className="w-5 h-5 text-primary" />
                       <div>
                         <p className="text-2xl">
-                          {volunteerDashboardData.user.completedVolunteering}
+                          {
+                            LocalStorageManager.getApplications().filter(
+                              (app) => app.status === "completed"
+                            ).length
+                          }
                         </p>
                         <p className="text-sm text-muted-foreground">
                           Completed
@@ -431,9 +364,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     <div className="flex items-center space-x-2">
                       <Star className="w-5 h-5 text-yellow-500" />
                       <div>
-                        <p className="text-2xl">
-                          {volunteerDashboardData.user.rating}
-                        </p>
+                        <p className="text-2xl">4.8</p>
                         <p className="text-sm text-muted-foreground">Rating</p>
                       </div>
                     </div>
@@ -445,9 +376,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     <div className="flex items-center space-x-2">
                       <Clock className="w-5 h-5 text-blue-500" />
                       <div>
-                        <p className="text-2xl">
-                          {volunteerDashboardData.currentVolunteering.daysLeft}
-                        </p>
+                        <p className="text-2xl">-</p>
                         <p className="text-sm text-muted-foreground">
                           Days Left
                         </p>
@@ -462,7 +391,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <Heart className="w-5 h-5 text-red-500" />
                       <div>
                         <p className="text-2xl">
-                          {volunteerDashboardData.savedOpportunities.length}
+                          {LocalStorageManager.getSavedItems().length}
                         </p>
                         <p className="text-sm text-muted-foreground">Saved</p>
                       </div>
@@ -480,48 +409,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     </CardHeader>
                     <CardContent>
                       <div className="bg-green-50 dark:bg-green-950/20 border border-green-200 dark:border-green-800 rounded-lg p-4">
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <h3 className="font-medium">
-                              {
-                                volunteerDashboardData.currentVolunteering
-                                  .hostelName
-                              }
-                            </h3>
-                            <p className="text-sm text-muted-foreground flex items-center">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              {
-                                volunteerDashboardData.currentVolunteering
-                                  .location
-                              }
-                            </p>
-                            <p className="text-sm mt-1">
-                              Role:{" "}
-                              {volunteerDashboardData.currentVolunteering.role}
-                            </p>
-                            <p className="text-xs text-muted-foreground">
-                              {
-                                volunteerDashboardData.currentVolunteering
-                                  .startDate
-                              }{" "}
-                              -{" "}
-                              {
-                                volunteerDashboardData.currentVolunteering
-                                  .endDate
-                              }
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <div className="text-2xl font-bold text-green-600">
-                              {
-                                volunteerDashboardData.currentVolunteering
-                                  .daysLeft
-                              }
-                            </div>
-                            <div className="text-xs text-muted-foreground">
-                              days left
-                            </div>
-                          </div>
+                        <div className="text-center">
+                          <p className="text-muted-foreground">
+                            No active volunteering positions
+                          </p>
+                          <p className="text-sm text-muted-foreground mt-1">
+                            Apply to hostels to start your volunteer journey!
+                          </p>
                         </div>
                       </div>
                     </CardContent>
@@ -533,50 +427,20 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Recommended for You</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        {volunteerDashboardData.upcomingOpportunities.map(
-                          (opportunity) => (
-                            <div
-                              key={opportunity.id}
-                              className="flex items-center space-x-4 p-4 border rounded-lg"
-                            >
-                              <ImageWithFallback
-                                src={opportunity.image}
-                                alt={opportunity.name}
-                                className="w-16 h-16 rounded-lg object-cover"
-                              />
-                              <div className="flex-1">
-                                <div className="flex items-center space-x-2">
-                                  <h4 className="font-medium">
-                                    {opportunity.name}
-                                  </h4>
-                                  {opportunity.urgent && (
-                                    <Badge
-                                      variant="destructive"
-                                      className="text-xs"
-                                    >
-                                      Urgent
-                                    </Badge>
-                                  )}
-                                </div>
-                                <p className="text-sm text-muted-foreground flex items-center">
-                                  <MapPin className="w-3 h-3 mr-1" />
-                                  {opportunity.location}
-                                </p>
-                                <div className="flex items-center space-x-4 mt-1">
-                                  <span className="text-xs text-muted-foreground">
-                                    {opportunity.commitment}
-                                  </span>
-                                  <div className="flex items-center text-xs">
-                                    <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                                    {opportunity.rating}
-                                  </div>
-                                </div>
-                              </div>
-                              <Button size="sm">Apply</Button>
-                            </div>
-                          )
-                        )}
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">
+                          No recommendations yet
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Complete your profile to get personalized
+                          recommendations!
+                        </p>
+                        <Button
+                          className="mt-4"
+                          onClick={() => setCurrentView("opportunities")}
+                        >
+                          Browse Opportunities
+                        </Button>
                       </div>
                     </CardContent>
                   </Card>
@@ -589,31 +453,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Recent Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {volunteerDashboardData.recentActivity.map(
-                          (activity) => (
-                            <div
-                              key={activity.id}
-                              className="flex items-start space-x-3"
-                            >
-                              <div
-                                className={`w-2 h-2 rounded-full mt-2 ${
-                                  activity.type === "started"
-                                    ? "bg-green-500"
-                                    : activity.type === "review"
-                                    ? "bg-yellow-500"
-                                    : "bg-blue-500"
-                                }`}
-                              ></div>
-                              <div>
-                                <p className="text-sm">{activity.text}</p>
-                                <p className="text-xs text-muted-foreground">
-                                  {activity.date}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        )}
+                      <div className="text-center py-4">
+                        <p className="text-muted-foreground">
+                          No recent activity
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Your volunteer activities will appear here
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -624,29 +470,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Saved Opportunities</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {volunteerDashboardData.savedOpportunities.map(
-                          (opportunity) => (
-                            <div
-                              key={opportunity.id}
-                              className="flex items-center space-x-3"
-                            >
-                              <ImageWithFallback
-                                src={opportunity.image}
-                                alt={opportunity.name}
-                                className="w-10 h-10 rounded object-cover"
-                              />
-                              <div className="flex-1">
-                                <h5 className="text-sm font-medium">
-                                  {opportunity.name}
-                                </h5>
-                                <p className="text-xs text-muted-foreground">
-                                  {opportunity.location}
-                                </p>
-                              </div>
-                            </div>
-                          )
-                        )}
+                      <div className="text-center py-4">
+                        <p className="text-muted-foreground">
+                          No saved opportunities
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Heart opportunities while browsing to save them here!
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -688,33 +518,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                   <CardTitle>Saved Opportunities</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {volunteerDashboardData.savedOpportunities.map(
-                      (opportunity) => (
-                        <div
-                          key={opportunity.id}
-                          className="border rounded-lg p-4"
-                        >
-                          <ImageWithFallback
-                            src={opportunity.image}
-                            alt={opportunity.name}
-                            className="w-full h-32 rounded object-cover mb-3"
-                          />
-                          <h4 className="font-medium">{opportunity.name}</h4>
-                          <p className="text-sm text-muted-foreground flex items-center">
-                            <MapPin className="w-3 h-3 mr-1" />
-                            {opportunity.location}
-                          </p>
-                          <div className="flex items-center justify-between mt-2">
-                            <div className="flex items-center text-sm">
-                              <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                              {opportunity.rating}
-                            </div>
-                            <Button size="sm">Apply</Button>
-                          </div>
-                        </div>
-                      )
-                    )}
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">
+                      No saved opportunities
+                    </p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Save opportunities while browsing to see them here!
+                    </p>
                   </div>
                 </CardContent>
               </Card>
@@ -736,16 +546,47 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            <TabsContent value="requests">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Volunteer Requests</CardTitle>
+                    <Button
+                      onClick={() => setCurrentView("volunteer-requests")}
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      View All Requests
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                    <h3 className="text-lg mb-2">Volunteer Requests</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Hostels that want you to volunteer will send requests here
+                    </p>
+                    <Button
+                      onClick={() => setCurrentView("volunteer-requests")}
+                    >
+                      View Requests
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
           </Tabs>
         )}
 
         {/* Hostel Dashboard */}
         {!isVolunteer && (
           <Tabs value={activeTab} onValueChange={setActiveTab}>
-            <TabsList className="grid w-full grid-cols-4">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="overview">Overview</TabsTrigger>
               <TabsTrigger value="volunteers">Browse Volunteers</TabsTrigger>
               <TabsTrigger value="applications">Applications</TabsTrigger>
+              <TabsTrigger value="requests">Requests</TabsTrigger>
               <TabsTrigger value="analytics">Analytics</TabsTrigger>
             </TabsList>
 
@@ -756,9 +597,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     <div className="flex items-center space-x-2">
                       <Users className="w-5 h-5 text-primary" />
                       <div>
-                        <p className="text-2xl">
-                          {hostelDashboardData.user.totalVolunteers}
-                        </p>
+                        <p className="text-2xl">0</p>
                         <p className="text-sm text-muted-foreground">
                           Total Volunteers
                         </p>
@@ -772,9 +611,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     <div className="flex items-center space-x-2">
                       <Star className="w-5 h-5 text-yellow-500" />
                       <div>
-                        <p className="text-2xl">
-                          {hostelDashboardData.user.rating}
-                        </p>
+                        <p className="text-2xl">4.8</p>
                         <p className="text-sm text-muted-foreground">Rating</p>
                       </div>
                     </div>
@@ -786,9 +623,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                     <div className="flex items-center space-x-2">
                       <Clock className="w-5 h-5 text-blue-500" />
                       <div>
-                        <p className="text-2xl">
-                          {hostelDashboardData.currentVolunteers.length}
-                        </p>
+                        <p className="text-2xl">0</p>
                         <p className="text-sm text-muted-foreground">Current</p>
                       </div>
                     </div>
@@ -801,7 +636,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <TrendingUp className="w-5 h-5 text-green-500" />
                       <div>
                         <p className="text-2xl">
-                          {hostelDashboardData.pendingApplications.length}
+                          {LocalStorageManager.getApplications().length}
                         </p>
                         <p className="text-sm text-muted-foreground">Pending</p>
                       </div>
@@ -818,59 +653,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Pending Applications</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        {hostelDashboardData.pendingApplications.map(
-                          (application) => (
-                            <div
-                              key={application.id}
-                              className="flex items-center space-x-4 p-4 border rounded-lg"
-                            >
-                              <Avatar>
-                                <AvatarImage
-                                  src={application.avatar}
-                                  alt={application.name}
-                                />
-                                <AvatarFallback>
-                                  {application.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <h4 className="font-medium">
-                                  {application.name}
-                                </h4>
-                                <div className="flex flex-wrap gap-1 mt-1">
-                                  {application.skills.map((skill) => (
-                                    <Badge
-                                      key={skill}
-                                      variant="outline"
-                                      className="text-xs"
-                                    >
-                                      {skill}
-                                    </Badge>
-                                  ))}
-                                </div>
-                                <p className="text-xs text-muted-foreground mt-1">
-                                  Available: {application.availability}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <div className="flex items-center text-sm mb-2">
-                                  <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                                  {application.rating}
-                                </div>
-                                <div className="flex space-x-2">
-                                  <Button size="sm" variant="outline">
-                                    Decline
-                                  </Button>
-                                  <Button size="sm">Accept</Button>
-                                </div>
-                              </div>
-                            </div>
-                          )
-                        )}
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">
+                          No pending applications
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Applications from volunteers will appear here
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -881,48 +670,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Current Volunteers</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-4">
-                        {hostelDashboardData.currentVolunteers.map(
-                          (volunteer) => (
-                            <div
-                              key={volunteer.id}
-                              className="flex items-center space-x-4 p-4 border rounded-lg"
-                            >
-                              <Avatar>
-                                <AvatarImage
-                                  src={volunteer.avatar}
-                                  alt={volunteer.name}
-                                />
-                                <AvatarFallback>
-                                  {volunteer.name
-                                    .split(" ")
-                                    .map((n) => n[0])
-                                    .join("")}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <h4 className="font-medium">
-                                  {volunteer.name}
-                                </h4>
-                                <p className="text-sm text-muted-foreground">
-                                  {volunteer.role}
-                                </p>
-                                <p className="text-xs text-muted-foreground">
-                                  Until {volunteer.endDate}
-                                </p>
-                              </div>
-                              <div className="text-right">
-                                <div className="flex items-center text-sm mb-2">
-                                  <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                                  {volunteer.rating}
-                                </div>
-                                <Button size="sm" variant="outline">
-                                  Message
-                                </Button>
-                              </div>
-                            </div>
-                          )
-                        )}
+                      <div className="text-center py-8">
+                        <p className="text-muted-foreground">
+                          No current volunteers
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Volunteers working at your hostel will appear here
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -938,25 +692,19 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <div>
                         <div className="flex justify-between text-sm">
                           <span>Response Rate</span>
-                          <span className="font-medium">
-                            {hostelDashboardData.stats.responseRate}
-                          </span>
+                          <span className="font-medium">95%</span>
                         </div>
                       </div>
                       <div>
                         <div className="flex justify-between text-sm">
                           <span>Average Stay</span>
-                          <span className="font-medium">
-                            {hostelDashboardData.stats.averageStay}
-                          </span>
+                          <span className="font-medium">6 weeks</span>
                         </div>
                       </div>
                       <div>
                         <div className="flex justify-between text-sm">
                           <span>Repeat Volunteers</span>
-                          <span className="font-medium">
-                            {hostelDashboardData.stats.repeatVolunteers}
-                          </span>
+                          <span className="font-medium">30%</span>
                         </div>
                       </div>
                     </CardContent>
@@ -968,29 +716,13 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                       <CardTitle>Recent Activity</CardTitle>
                     </CardHeader>
                     <CardContent>
-                      <div className="space-y-3">
-                        {hostelDashboardData.recentActivity.map((activity) => (
-                          <div
-                            key={activity.id}
-                            className="flex items-start space-x-3"
-                          >
-                            <div
-                              className={`w-2 h-2 rounded-full mt-2 ${
-                                activity.type === "application"
-                                  ? "bg-blue-500"
-                                  : activity.type === "extension"
-                                  ? "bg-green-500"
-                                  : "bg-yellow-500"
-                              }`}
-                            ></div>
-                            <div>
-                              <p className="text-sm">{activity.text}</p>
-                              <p className="text-xs text-muted-foreground">
-                                {activity.date}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
+                      <div className="text-center py-4">
+                        <p className="text-muted-foreground">
+                          No recent activity
+                        </p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                          Activity from your hostel will appear here
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
@@ -1032,61 +764,41 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
                   <CardTitle>All Applications</CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-4">
-                    {hostelDashboardData.pendingApplications.map(
-                      (application) => (
-                        <div
-                          key={application.id}
-                          className="flex items-center space-x-4 p-4 border rounded-lg"
-                        >
-                          <Avatar>
-                            <AvatarImage
-                              src={application.avatar}
-                              alt={application.name}
-                            />
-                            <AvatarFallback>
-                              {application.name
-                                .split(" ")
-                                .map((n) => n[0])
-                                .join("")}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="flex-1">
-                            <h4 className="font-medium">{application.name}</h4>
-                            <div className="flex flex-wrap gap-1 mt-1">
-                              {application.skills.map((skill) => (
-                                <Badge
-                                  key={skill}
-                                  variant="outline"
-                                  className="text-xs"
-                                >
-                                  {skill}
-                                </Badge>
-                              ))}
-                            </div>
-                            <p className="text-xs text-muted-foreground mt-1">
-                              Available: {application.availability} • Applied{" "}
-                              {application.applied}
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <div className="flex items-center text-sm mb-2">
-                              <Star className="w-3 h-3 mr-1 fill-yellow-400 text-yellow-400" />
-                              {application.rating}
-                            </div>
-                            <div className="flex space-x-2">
-                              <Button size="sm" variant="outline">
-                                View Profile
-                              </Button>
-                              <Button size="sm" variant="outline">
-                                Decline
-                              </Button>
-                              <Button size="sm">Accept</Button>
-                            </div>
-                          </div>
-                        </div>
-                      )
-                    )}
+                  <div className="text-center py-8">
+                    <p className="text-muted-foreground">No applications yet</p>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Applications from volunteers will appear here
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="requests">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <CardTitle>Volunteer Requests Sent</CardTitle>
+                    <Button
+                      onClick={() => setCurrentView("volunteer-requests")}
+                    >
+                      <MessageCircle className="w-4 h-4 mr-2" />
+                      View All Requests
+                    </Button>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-center py-8">
+                    <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                    <h3 className="text-lg mb-2">Volunteer Requests</h3>
+                    <p className="text-muted-foreground mb-4">
+                      Track requests you've sent to potential volunteers
+                    </p>
+                    <Button
+                      onClick={() => setCurrentView("volunteer-requests")}
+                    >
+                      View Requests
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

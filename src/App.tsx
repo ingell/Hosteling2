@@ -10,11 +10,17 @@ import { HostelSignupFlow } from "./components/hostel-signup-flow";
 import { HowItWorks } from "./components/how-it-works";
 import { ForHostels } from "./components/for-hostels";
 import { LoggedInView } from "./components/logged-in-view";
-import {
-  HostelProfile,
-  LocalStorageManager,
-  VolunteerProfile,
-} from "./components/utils/local-storage";
+import { LoginFlow } from "./components/login-flow";
+import { SearchWithSuggestions } from "./components/search-with-suggestions";
+import { HostelDetailView } from "./components/hostel-detail-view";
+import { LocalStorageManager } from "./components/utils/local-storage";
+import { VolunteerCommunity } from "./components/volunteer-community";
+import { SafetyGuidelines } from "./components/safety-guidelines";
+import { About } from "./components/about";
+import { HelpCenter } from "./components/help-center";
+import { Contact } from "./components/contact";
+import { Terms } from "./components/terms";
+import { Privacy } from "./components/privacy";
 import { Search, MapPin, Users, Heart, Clock, Globe } from "lucide-react";
 import { motion } from "motion/react";
 
@@ -23,105 +29,76 @@ const featuredHostels = [
     id: 1,
     name: "Nomad's Paradise",
     location: "Bangkok, Thailand",
-    image:
-      "https://images.unsplash.com/photo-1549872178-96db16a53ca8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2JpbGUlMjBhcHAlMjBpbnRlcmZhY2V8ZW58MXx8fHwxNzU4NjQ5MjQ3fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1549872178-96db16a53ca8?w=400&h=300&fit=crop",
     volunteersNeeded: 3,
     commitment: "2-4 weeks",
     tasks: ["Reception", "Cleaning", "Events"],
     rating: 4.8,
+    description: "A vibrant hostel in the heart of Bangkok offering authentic local experiences."
   },
   {
     id: 2,
     name: "Surf & Stay Hostel",
     location: "Lisbon, Portugal",
-    image:
-      "https://images.unsplash.com/photo-1709805619372-40de3f158e83?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3N0ZWwlMjBhY2NvbW1vZGF0aW9uJTIwdHJhdmVsfGVufDF8fHx8MTc1ODg4NTU5NHww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1709805619372-40de3f158e83?w=400&h=300&fit=crop",
     volunteersNeeded: 2,
     commitment: "3-6 weeks",
     tasks: ["Maintenance", "Tours", "Bar Help"],
     rating: 4.9,
+    description: "Beachside hostel perfect for surf enthusiasts and digital nomads."
   },
   {
     id: 3,
     name: "Mountain View Lodge",
     location: "Cusco, Peru",
-    image:
-      "https://images.unsplash.com/photo-1706823871410-ed8b01faef7e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx3b3JsZCUyMG1hcCUyMHRyYXZlbCUyMGRlc3RpbmF0aW9uc3xlbnwxfHx8fDE3NTg3OTcwNDJ8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral",
+    image: "https://images.unsplash.com/photo-1706823871410-ed8b01faef7e?w=400&h=300&fit=crop",
     volunteersNeeded: 4,
     commitment: "4-8 weeks",
     tasks: ["Kitchen", "Housekeeping", "Social Media"],
     rating: 4.7,
-  },
+    description: "Gateway to Machu Picchu with stunning mountain views and local culture."
+  }
 ];
 
 const benefits = [
-  {
-    icon: <Heart className="w-6 h-6" />,
-    title: "100% Free",
-    description:
-      "No booking fees or commissions. Connect directly with hostels at zero cost.",
-  },
-  {
-    icon: <Globe className="w-6 h-6" />,
-    title: "Global Network",
-    description:
-      "Access opportunities in over 50 countries across 6 continents.",
-  },
-  {
-    icon: <Users className="w-6 h-6" />,
-    title: "Community",
-    description:
-      "Join a community of like-minded travelers and make lifelong connections.",
-  },
-  {
-    icon: <Clock className="w-6 h-6" />,
-    title: "Flexible",
-    description:
-      "Choose your commitment length and type of work that suits your travel plans.",
-  },
+  { icon: <Heart className="w-6 h-6" />, title: "100% Free", description: "No booking fees or commissions. Connect directly with hostels at zero cost." },
+  { icon: <Globe className="w-6 h-6" />, title: "Global Network", description: "Access opportunities in over 50 countries across 6 continents." },
+  { icon: <Users className="w-6 h-6" />, title: "Community", description: "Join a community of like-minded travelers and make lifelong connections." },
+  { icon: <Clock className="w-6 h-6" />, title: "Flexible", description: "Choose your commitment length and type of work that suits your travel plans." }
 ];
 
 export default function App() {
   const [searchLocation, setSearchLocation] = useState("");
-  const [currentView, setCurrentView] = useState<
-    | "landing"
-    | "signup-choice"
-    | "signup"
-    | "hostel-signup"
-    | "how-it-works"
-    | "for-hostels"
-    | "logged-in"
-  >("landing");
+  const [currentView, setCurrentView] = useState<"landing" | "signup-choice" | "signup" | "hostel-signup" | "how-it-works" | "for-hostels" | "logged-in" | "login" | "hostel-detail" | "browse" | "volunteer-community" | "safety-guidelines" | "about" | "help-center" | "contact" | "terms" | "privacy">("landing");
   const [userType, setUserType] = useState<"volunteer" | "hostel">("volunteer");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState<any>(null);
+  const [selectedHostel, setSelectedHostel] = useState<any>(null);
+  const [searchResults, setSearchResults] = useState<any[]>([]);
 
   // Load user data from localStorage on app start
   useEffect(() => {
+    document.title = "Hosteling - Free Volunteer Opportunities at Hostels Worldwide";
     const storedUserData = LocalStorageManager.getUserData();
     if (storedUserData && storedUserData.isLoggedIn) {
       setUserData(storedUserData);
       setUserType(storedUserData.type);
       setIsLoggedIn(true);
       setCurrentView("logged-in");
-
+      
       // Add welcome back notification
       LocalStorageManager.addNotification({
         type: "system",
         title: "Welcome back!",
-        message: `Welcome back to Hosteling, ${
-          storedUserData.type === "volunteer"
-            ? (storedUserData.profile as VolunteerProfile).firstName
-            : (storedUserData.profile as HostelProfile).contactFirstName
-        }!`,
-        priority: "low",
+        message: `Welcome back to Hosteling, ${storedUserData.type === 'volunteer' 
+          ? storedUserData.profile.firstName 
+          : storedUserData.profile.contactFirstName}!`,
+        priority: "low"
       });
     }
   }, []);
 
   const handleSignupComplete = (data: any, type: "volunteer" | "hostel") => {
-    console.log("Signup completed:", data);
-
     // Create user data object for localStorage
     const newUserData = {
       id: Date.now().toString(),
@@ -131,18 +108,18 @@ export default function App() {
       savedItems: [],
       applications: [],
       messages: [],
-      notifications: [],
+      notifications: []
     };
 
     // Save to localStorage
     LocalStorageManager.saveUserData(newUserData);
-
+    
     // Add welcome notification
     LocalStorageManager.addNotification({
       type: "system",
       title: "Welcome to Hosteling!",
       message: `Your ${type} account has been created successfully. Start exploring opportunities!`,
-      priority: "high",
+      priority: "high"
     });
 
     setUserData(newUserData);
@@ -151,73 +128,38 @@ export default function App() {
     setCurrentView("logged-in");
   };
 
-  const handleLogin = (type: "volunteer" | "hostel") => {
-    // For demo purposes, create a mock logged-in user
-    const mockUserData = {
-      id: "demo_" + Date.now(),
-      type,
-      isLoggedIn: true,
-      profile:
-        type === "volunteer"
-          ? ({
-              firstName: "Demo",
-              lastName: "User",
-              email: "demo@email.com",
-              country: "United States",
-              city: "San Francisco",
-              skills: ["Reception", "Social Media"],
-              languages: ["English"],
-              availability: {
-                from: undefined,
-                to: undefined,
-              },
-              experience: "Intermediate",
-              bio: "Demo volunteer user",
-              commitment: "2-4 weeks",
-            } as VolunteerProfile) // Ensure it matches VolunteerProfile
-          : ({
-              hostelName: "Demo Hostel",
-              contactFirstName: "Demo",
-              contactLastName: "Manager",
-              email: "demo@hostel.com",
-              phone: "123-456-7890",
-              country: "Thailand",
-              city: "Bangkok",
-              address: "123 Demo Street",
-              hostelType: "Backpacker",
-              totalBeds: "50",
-              establishedYear: "2010",
-              volunteerRoles: ["Reception", "Cleaning"],
-              accommodationType: "Shared Dorm",
-              mealsIncluded: true,
-              wifiIncluded: true,
-              workHoursPerDay: "4-6 hours",
-              minimumStay: "2 weeks",
-              maximumStay: "3 months",
-              description: "Demo hostel for testing",
-              amenities: ["Pool", "Bar", "Free Breakfast"],
-              languages: ["English", "Thai"],
-              photos: [],
-            } as HostelProfile), // Ensure it matches HostelProfile
-      savedItems: [],
-      applications: [],
-      messages: [],
-      notifications: [],
-    };
+  const handleLogin = (credentials: { email: string; password: string; type: 'volunteer' | 'hostel' }) => {
+    // Check if user exists in localStorage
+    const existingUserData = LocalStorageManager.getUserData();
+    
+    if (existingUserData && 
+        existingUserData.profile.email === credentials.email && 
+        existingUserData.type === credentials.type) {
+      
+      // User exists, log them in
+      const updatedUserData = { ...existingUserData, isLoggedIn: true };
+      LocalStorageManager.saveUserData(updatedUserData);
+      
+      LocalStorageManager.addNotification({
+        type: "system",
+        title: "Welcome back!",
+        message: `Successfully logged in to your ${credentials.type} account.`,
+        priority: "medium"
+      });
 
-    LocalStorageManager.saveUserData(mockUserData);
-    LocalStorageManager.addNotification({
-      type: "system",
-      title: "Demo Login",
-      message:
-        "You're logged in as a demo user. Sign up to save your data permanently!",
-      priority: "medium",
-    });
-
-    setUserData(mockUserData);
-    setUserType(type);
-    setIsLoggedIn(true);
-    setCurrentView("logged-in");
+      setUserData(updatedUserData);
+      setUserType(credentials.type);
+      setIsLoggedIn(true);
+      setCurrentView("logged-in");
+    } else {
+      // User doesn't exist or wrong credentials
+      LocalStorageManager.addNotification({
+        type: "error",
+        title: "Login Failed",
+        message: "Invalid email or password. Please check your credentials or sign up.",
+        priority: "high"
+      });
+    }
   };
 
   const handleLogout = () => {
@@ -227,15 +169,198 @@ export default function App() {
     setCurrentView("landing");
   };
 
+  const handleSearch = (location: string) => {
+    // Filter hostels based on search location
+    const filtered = featuredHostels.filter(hostel => 
+      hostel.location.toLowerCase().includes(location.toLowerCase()) ||
+      hostel.name.toLowerCase().includes(location.toLowerCase())
+    );
+    setSearchResults(filtered);
+    setCurrentView("browse");
+  };
+
+  const handleHostelClick = (hostel: any) => {
+    setSelectedHostel(hostel);
+    setCurrentView("hostel-detail");
+  };
+
+  const handleApply = (hostelId: string) => {
+    if (!isLoggedIn) {
+      LocalStorageManager.addNotification({
+        type: "warning",
+        title: "Please Log In",
+        message: "You need to log in to apply for positions.",
+        priority: "high"
+      });
+      setCurrentView("login");
+      return;
+    }
+    
+    LocalStorageManager.addNotification({
+      type: "success",
+      title: "Application Sent!",
+      message: "Your application has been sent to the hostel.",
+      priority: "high"
+    });
+  };
+
+  const handleContact = (hostelId: string) => {
+    if (!isLoggedIn) {
+      LocalStorageManager.addNotification({
+        type: "warning",
+        title: "Please Log In",
+        message: "You need to log in to contact hostels.",
+        priority: "high"
+      });
+      setCurrentView("login");
+      return;
+    }
+    
+    LocalStorageManager.addNotification({
+      type: "info",
+      title: "Message Sent!",
+      message: "Your message has been sent to the hostel.",
+      priority: "medium"
+    });
+  };
+
   if (currentView === "logged-in") {
-    return <LoggedInView userType={userType} onLogout={handleLogout} />;
+    return (
+      <LoggedInView 
+        userType={userType}
+        onLogout={handleLogout}
+      />
+    );
+  }
+
+  if (currentView === "login") {
+    return (
+      <LoginFlow 
+        onLogin={handleLogin}
+        onBack={() => setCurrentView("landing")}
+        onSignupRedirect={() => setCurrentView("signup-choice")}
+      />
+    );
+  }
+
+  if (currentView === "hostel-detail") {
+    return (
+      <HostelDetailView
+        hostel={selectedHostel}
+        onBack={() => setCurrentView(searchResults.length > 0 ? "browse" : "landing")}
+        onApply={handleApply}
+        onContact={handleContact}
+        userType={userType}
+      />
+    );
+  }
+
+  if (currentView === "browse") {
+    const hostelsToShow = searchResults.length > 0 ? searchResults : featuredHostels;
+    
+    return (
+      <div className="min-h-screen bg-background">
+        <header className="border-b">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex justify-between items-center h-16">
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setCurrentView("landing")}>
+                <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-white" />
+                </div>
+                <span className="text-xl">Hosteling</span>
+              </div>
+              <nav className="hidden md:flex space-x-8">
+                <Button variant="ghost" onClick={() => setCurrentView("how-it-works")}>How it works</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("for-hostels")}>For Hostels</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("login")}>Login</Button>
+                <Button 
+                  onClick={() => setCurrentView("signup-choice")}
+                  className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
+                >
+                  Sign up
+                </Button>
+              </nav>
+            </div>
+          </div>
+        </header>
+
+        <div className="max-w-7xl mx-auto px-4 py-8">
+          <div className="mb-8">
+            <div className="max-w-2xl">
+              <SearchWithSuggestions
+                value={searchLocation}
+                onChange={setSearchLocation}
+                onSearch={handleSearch}
+              />
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold">
+              {searchResults.length > 0 ? `Found ${hostelsToShow.length} opportunities` : 'Featured Opportunities'}
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {hostelsToShow.map((hostel) => (
+                <Card key={hostel.id} className="group hover:shadow-lg transition-all duration-300 overflow-hidden cursor-pointer"
+                      onClick={() => handleHostelClick(hostel)}>
+                  <div className="aspect-[4/3] overflow-hidden">
+                    <ImageWithFallback
+                      src={hostel.image}
+                      alt={hostel.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                  <CardContent className="p-6 space-y-4">
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between">
+                        <h3>{hostel.name}</h3>
+                        <div className="flex items-center space-x-1">
+                          <span className="text-sm">⭐</span>
+                          <span className="text-sm">{hostel.rating}</span>
+                        </div>
+                      </div>
+                      <p className="text-muted-foreground flex items-center">
+                        <MapPin className="w-4 h-4 mr-1" />
+                        {hostel.location}
+                      </p>
+                    </div>
+
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Volunteers needed:</span>
+                        <Badge variant="secondary">{hostel.volunteersNeeded}</Badge>
+                      </div>
+                      <div className="flex items-center justify-between text-sm">
+                        <span className="text-muted-foreground">Commitment:</span>
+                        <span>{hostel.commitment}</span>
+                      </div>
+                      <div className="space-y-2">
+                        <span className="text-sm text-muted-foreground">Tasks:</span>
+                        <div className="flex flex-wrap gap-1">
+                          {hostel.tasks.map((task: string, taskIndex: number) => (
+                            <Badge key={taskIndex} variant="outline" className="text-xs">
+                              {task}
+                            </Badge>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   if (currentView === "signup-choice") {
     return (
-      <SignupChoice
+      <SignupChoice 
         onChoice={(type) => {
-          if (type === "volunteer") {
+          if (type === 'volunteer') {
             setCurrentView("signup");
           } else {
             setCurrentView("hostel-signup");
@@ -248,7 +373,7 @@ export default function App() {
 
   if (currentView === "signup") {
     return (
-      <SignupFlow
+      <SignupFlow 
         onComplete={(data) => handleSignupComplete(data, "volunteer")}
         onBack={() => setCurrentView("signup-choice")}
       />
@@ -257,7 +382,7 @@ export default function App() {
 
   if (currentView === "hostel-signup") {
     return (
-      <HostelSignupFlow
+      <HostelSignupFlow 
         onComplete={(data) => handleSignupComplete(data, "hostel")}
         onBack={() => setCurrentView("signup-choice")}
       />
@@ -270,30 +395,17 @@ export default function App() {
         <header className="border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => setCurrentView("landing")}
-              >
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setCurrentView("landing")}>
                 <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl">Hosteling</span>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentView("how-it-works")}
-                >
-                  How it works
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentView("for-hostels")}
-                >
-                  For Hostels
-                </Button>
-                <Button variant="ghost">Login</Button>
-                <Button
+                <Button variant="ghost" onClick={() => setCurrentView("how-it-works")}>How it works</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("for-hostels")}>For Hostels</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("login")}>Login</Button>
+                <Button 
                   onClick={() => setCurrentView("signup-choice")}
                   className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
                 >
@@ -314,30 +426,17 @@ export default function App() {
         <header className="border-b">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="flex justify-between items-center h-16">
-              <div
-                className="flex items-center space-x-2 cursor-pointer"
-                onClick={() => setCurrentView("landing")}
-              >
+              <div className="flex items-center space-x-2 cursor-pointer" onClick={() => setCurrentView("landing")}>
                 <div className="w-8 h-8 bg-gradient-to-r from-orange-500 to-yellow-500 rounded-lg flex items-center justify-center">
                   <Users className="w-5 h-5 text-white" />
                 </div>
                 <span className="text-xl">Hosteling</span>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentView("how-it-works")}
-                >
-                  How it works
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => setCurrentView("for-hostels")}
-                >
-                  For Hostels
-                </Button>
-                <Button variant="ghost">Login</Button>
-                <Button
+                <Button variant="ghost" onClick={() => setCurrentView("how-it-works")}>How it works</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("for-hostels")}>For Hostels</Button>
+                <Button variant="ghost" onClick={() => setCurrentView("login")}>Login</Button>
+                <Button 
                   onClick={() => setCurrentView("signup-choice")}
                   className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
                 >
@@ -365,22 +464,10 @@ export default function App() {
               <span className="text-xl">Hosteling</span>
             </div>
             <nav className="hidden md:flex space-x-8">
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentView("how-it-works")}
-              >
-                How it works
-              </Button>
-              <Button
-                variant="ghost"
-                onClick={() => setCurrentView("for-hostels")}
-              >
-                For Hostels
-              </Button>
-              <Button variant="ghost" onClick={() => handleLogin("volunteer")}>
-                Login
-              </Button>
-              <Button
+              <Button variant="ghost" onClick={() => setCurrentView("how-it-works")}>How it works</Button>
+              <Button variant="ghost" onClick={() => setCurrentView("for-hostels")}>For Hostels</Button>
+              <Button variant="ghost" onClick={() => setCurrentView("login")}>Login</Button>
+              <Button 
                 onClick={() => setCurrentView("signup-choice")}
                 className="bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
               >
@@ -406,28 +493,18 @@ export default function App() {
                 <span className="text-primary"> Stay for free.</span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Connect with hostels around the globe, contribute your skills,
-                and explore the world without breaking the bank. 100% free
-                platform.
+                Connect with hostels around the globe, contribute your skills, and explore the world without breaking the bank. 100% free platform.
               </p>
             </div>
 
             {/* Search Bar */}
             <div className="max-w-2xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4 p-4 bg-background rounded-lg shadow-lg">
-                <div className="relative flex-1">
-                  <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-5 h-5" />
-                  <Input
-                    placeholder="Where do you want to volunteer?"
-                    value={searchLocation}
-                    onChange={(e) => setSearchLocation(e.target.value)}
-                    className="pl-10"
-                  />
-                </div>
-                <Button size="lg" className="px-8">
-                  <Search className="w-5 h-5 mr-2" />
-                  Search
-                </Button>
+              <div className="p-4 bg-background rounded-lg shadow-lg">
+                <SearchWithSuggestions
+                  value={searchLocation}
+                  onChange={setSearchLocation}
+                  onSearch={handleSearch}
+                />
               </div>
             </div>
 
@@ -448,8 +525,7 @@ export default function App() {
           <div className="text-center space-y-4 mb-16">
             <h2>How Hosteling works</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Simple, free, and direct. No middleman, no fees, just authentic
-              connections between travelers and hostels.
+              Simple, free, and direct. No middleman, no fees, just authentic connections between travelers and hostels.
             </p>
           </div>
 
@@ -479,8 +555,7 @@ export default function App() {
           <div className="text-center space-y-4 mb-16">
             <h2>Featured volunteer opportunities</h2>
             <p className="text-muted-foreground">
-              Start your journey with these amazing hostels looking for
-              volunteers right now.
+              Start your journey with these amazing hostels looking for volunteers right now.
             </p>
           </div>
 
@@ -517,30 +592,18 @@ export default function App() {
 
                     <div className="space-y-3">
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Volunteers needed:
-                        </span>
-                        <Badge variant="secondary">
-                          {hostel.volunteersNeeded}
-                        </Badge>
+                        <span className="text-muted-foreground">Volunteers needed:</span>
+                        <Badge variant="secondary">{hostel.volunteersNeeded}</Badge>
                       </div>
                       <div className="flex items-center justify-between text-sm">
-                        <span className="text-muted-foreground">
-                          Commitment:
-                        </span>
+                        <span className="text-muted-foreground">Commitment:</span>
                         <span>{hostel.commitment}</span>
                       </div>
                       <div className="space-y-2">
-                        <span className="text-sm text-muted-foreground">
-                          Tasks:
-                        </span>
+                        <span className="text-sm text-muted-foreground">Tasks:</span>
                         <div className="flex flex-wrap gap-1">
                           {hostel.tasks.map((task, taskIndex) => (
-                            <Badge
-                              key={taskIndex}
-                              variant="outline"
-                              className="text-xs"
-                            >
+                            <Badge key={taskIndex} variant="outline" className="text-xs">
                               {task}
                             </Badge>
                           ))}
@@ -548,7 +611,7 @@ export default function App() {
                       </div>
                     </div>
 
-                    <Button className="w-full">Apply now</Button>
+                    <Button className="w-full" onClick={(e) => { e.stopPropagation(); handleHostelClick(hostel); }}>Apply now</Button>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -556,7 +619,7 @@ export default function App() {
           </div>
 
           <div className="text-center mt-12">
-            <Button variant="outline" size="lg">
+            <Button variant="outline" size="lg" onClick={() => setCurrentView("browse")}>
               View all opportunities
             </Button>
           </div>
@@ -569,24 +632,19 @@ export default function App() {
           <div className="space-y-4">
             <h2>Ready to start your volunteer journey?</h2>
             <p className="text-muted-foreground">
-              Join thousands of travelers who have discovered the world through
-              volunteering. Create your profile today and start connecting with
-              hostels.
+              Join thousands of travelers who have discovered the world through volunteering. 
+              Create your profile today and start connecting with hostels.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button
-              size="lg"
-              className="px-8 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white"
+            <Button 
+              size="lg" 
+              className="px-8 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white" 
               onClick={() => setCurrentView("signup-choice")}
             >
               Get Started
             </Button>
-            <Button
-              variant="outline"
-              size="lg"
-              className="px-8 border-orange-200 text-orange-600 hover:bg-orange-50"
-            >
+            <Button variant="outline" size="lg" className="px-8 border-orange-200 text-orange-600 hover:bg-orange-50" onClick={() => setCurrentView("how-it-works")}>
               Learn More
             </Button>
           </div>
@@ -605,26 +663,25 @@ export default function App() {
                 <span className="text-lg">Hosteling</span>
               </div>
               <p className="text-muted-foreground text-sm">
-                Connecting volunteers with hostels worldwide. Travel more, spend
-                less.
+                Connecting volunteers with hostels worldwide. Travel more, spend less.
               </p>
             </div>
             <div className="space-y-4">
               <h4>For Volunteers</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>How it works</div>
-                <div>Browse opportunities</div>
-                <div>Safety guidelines</div>
-                <div>Community</div>
+                <div className="cursor-pointer hover:text-foreground" onClick={() => setCurrentView("how-it-works")}>How it works</div>
+                <div className="cursor-pointer hover:text-foreground" onClick={() => setCurrentView("browse")}>Browse opportunities</div>
+                <div className="cursor-pointer hover:text-foreground">Safety guidelines</div>
+                <div className="cursor-pointer hover:text-foreground">Community</div>
               </div>
             </div>
             <div className="space-y-4">
               <h4>For Hostels</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <div>List your hostel</div>
-                <div>Find volunteers</div>
-                <div>Pricing</div>
-                <div>Resources</div>
+                <div className="cursor-pointer hover:text-foreground" onClick={() => setCurrentView("for-hostels")}>List your hostel</div>
+                <div className="cursor-pointer hover:text-foreground" onClick={() => setCurrentView("for-hostels")}>Find volunteers</div>
+                <div className="cursor-pointer hover:text-foreground">Pricing</div>
+                <div className="cursor-pointer hover:text-foreground">Resources</div>
               </div>
             </div>
             <div className="space-y-4">

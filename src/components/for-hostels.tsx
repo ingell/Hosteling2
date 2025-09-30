@@ -158,7 +158,8 @@ const testimonials = [
 const commonRoles = [
   {
     role: "Reception",
-    description: "Greeting guests, checking in/out, phone calls",
+    description:
+      "Greeting guests, checking in/out, phone calls",
     hours: "4-6 hours/day",
   },
   {
@@ -178,7 +179,8 @@ const commonRoles = [
   },
   {
     role: "Social Media",
-    description: "Content creation, posting, community management",
+    description:
+      "Content creation, posting, community management",
     hours: "2-4 hours/day",
   },
   {
@@ -203,20 +205,32 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
             <div className="space-y-4">
               <h1 className="text-4xl md:text-6xl max-w-4xl mx-auto">
                 Find amazing volunteers.
-                <span className="text-primary"> Pay nothing.</span>
+                <span className="text-primary">
+                  {" "}
+                  Pay nothing.
+                </span>
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-                Connect with skilled, motivated travelers who want to contribute
-                to your hostel in exchange for accommodation. 100% free platform
-                for hostels.
+                Connect with skilled, motivated travelers who
+                want to contribute to your hostel in exchange
+                for accommodation. 100% free platform for
+                hostels.
               </p>
             </div>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="px-8" onClick={onSignupClick}>
+              <Button
+                size="lg"
+                className="px-8"
+                onClick={onSignupClick}
+              >
                 List Your Hostel
                 <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
-              <Button variant="outline" size="lg" className="px-8">
+              <Button
+                variant="outline"
+                size="lg"
+                className="px-8"
+              >
                 Browse Volunteer Profiles
               </Button>
             </div>
@@ -236,8 +250,9 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="text-center space-y-4 mb-16">
             <h2>Why hostels choose Hosteling</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              We're not just another booking platform. We're a community that
-              connects hostels with passionate travelers who want to contribute.
+              We're not just another booking platform. We're a
+              community that connects hostels with passionate
+              travelers who want to contribute.
             </p>
           </div>
 
@@ -264,17 +279,19 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                       </p>
                     </div>
                     <div className="space-y-2">
-                      {benefit.features.map((feature, featureIndex) => (
-                        <div
-                          key={featureIndex}
-                          className="flex items-center space-x-3"
-                        >
-                          <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
-                          <span className="text-sm text-muted-foreground">
-                            {feature}
-                          </span>
-                        </div>
-                      ))}
+                      {benefit.features.map(
+                        (feature, featureIndex) => (
+                          <div
+                            key={featureIndex}
+                            className="flex items-center space-x-3"
+                          >
+                            <CheckCircle className="w-4 h-4 text-green-500 flex-shrink-0" />
+                            <span className="text-sm text-muted-foreground">
+                              {feature}
+                            </span>
+                          </div>
+                        ),
+                      )}
                     </div>
                   </CardContent>
                 </Card>
@@ -290,8 +307,8 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="text-center space-y-4 mb-16">
             <h2>How it works for hostels</h2>
             <p className="text-muted-foreground max-w-2xl mx-auto">
-              Get started in minutes and connect with your first volunteer
-              within days.
+              Get started in minutes and connect with your first
+              volunteer within days.
             </p>
           </div>
 
@@ -326,7 +343,8 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="text-center space-y-4 mb-16">
             <h2>Platform features</h2>
             <p className="text-muted-foreground">
-              Everything you need to find and manage volunteers effectively.
+              Everything you need to find and manage volunteers
+              effectively.
             </p>
           </div>
 
@@ -361,7 +379,8 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="text-center space-y-4 mb-16">
             <h2>Common volunteer roles</h2>
             <p className="text-muted-foreground">
-              Examples of tasks volunteers can help with at your hostel.
+              Examples of tasks volunteers can help with at your
+              hostel.
             </p>
           </div>
 
@@ -380,7 +399,9 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                   <CardContent className="p-0 space-y-3">
                     <div className="flex items-center justify-between">
                       <h4>{item.role}</h4>
-                      <Badge variant="outline">{item.hours}</Badge>
+                      <Badge variant="outline">
+                        {item.hours}
+                      </Badge>
                     </div>
                     <p className="text-muted-foreground text-sm">
                       {item.description}
@@ -426,7 +447,9 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>
-                        <div className="text-sm">{testimonial.name}</div>
+                        <div className="text-sm">
+                          {testimonial.name}
+                        </div>
                         <div className="text-xs text-muted-foreground">
                           {testimonial.hostel}
                         </div>
@@ -447,19 +470,22 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
             <div className="space-y-4">
               <h2>Simple, transparent pricing</h2>
               <p className="text-muted-foreground">
-                Unlike other platforms that charge hefty commissions, Hosteling
-                is completely free.
+                Unlike other platforms that charge hefty
+                commissions, Hosteling is completely free.
               </p>
             </div>
 
             <Card className="p-12 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 border-primary/20">
               <CardContent className="p-0 space-y-8">
                 <div className="space-y-4">
-                  <div className="text-6xl text-primary">$0</div>
+                  <div className="text-6xl text-primary">
+                    $0
+                  </div>
                   <h3>Forever Free</h3>
                   <p className="text-muted-foreground">
-                    No setup fees, no monthly costs, no booking commissions.
-                    Just connect with volunteers for free.
+                    No setup fees, no monthly costs, no booking
+                    commissions. Just connect with volunteers
+                    for free.
                   </p>
                 </div>
 
@@ -482,7 +508,11 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                   ))}
                 </div>
 
-                <Button size="lg" className="px-8" onClick={onSignupClick}>
+                <Button
+                  size="lg"
+                  className="px-8"
+                  onClick={onSignupClick}
+                >
                   Get Started Free
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
@@ -498,19 +528,22 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="text-center space-y-4 mb-16">
             <h2>Frequently asked questions</h2>
             <p className="text-muted-foreground">
-              Common questions from hostel owners about using Hosteling.
+              Common questions from hostel owners about using
+              Hosteling.
             </p>
           </div>
 
           <div className="space-y-6">
             {[
               {
-                question: "How is Hosteling free for hostels?",
+                question:
+                  "How is Hosteling free for hostels?",
                 answer:
                   "We believe in creating genuine connections without barriers. Our platform is funded through optional premium features and partnerships, not by charging hostels or volunteers.",
               },
               {
-                question: "What kind of volunteers can I expect?",
+                question:
+                  "What kind of volunteers can I expect?",
                 answer:
                   "Our volunteers are typically young travelers (18-35) with various skills and backgrounds. Many have hospitality experience, language skills, or technical abilities. All complete a verification process.",
               },
@@ -520,17 +553,20 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                   "Review their profiles, previous volunteer experiences, references, and communicate directly through our messaging system. You have full control over who you accept.",
               },
               {
-                question: "What should I provide to volunteers?",
+                question:
+                  "What should I provide to volunteers?",
                 answer:
                   "Typically a bed in a shared dormitory, access to common areas, and basic amenities. Some hostels also provide meals or other perks. You set your own terms.",
               },
               {
-                question: "How long do volunteers usually stay?",
+                question:
+                  "How long do volunteers usually stay?",
                 answer:
                   "Most arrangements are 2-8 weeks, but this varies based on your needs and the volunteer's travel plans. You can specify minimum and maximum durations.",
               },
               {
-                question: "What if a volunteer doesn't work out?",
+                question:
+                  "What if a volunteer doesn't work out?",
                 answer:
                   "While rare, you can end an arrangement early if needed. We encourage clear communication and provide dispute resolution support if required.",
               },
@@ -538,7 +574,9 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
               <Card key={index} className="p-6">
                 <CardContent className="p-0 space-y-3">
                   <h4>{faq.question}</h4>
-                  <p className="text-muted-foreground">{faq.answer}</p>
+                  <p className="text-muted-foreground">
+                    {faq.answer}
+                  </p>
                 </CardContent>
               </Card>
             ))}
@@ -552,17 +590,26 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
           <div className="space-y-4">
             <h2>Ready to find your first volunteer?</h2>
             <p className="text-muted-foreground">
-              Join hundreds of hostels worldwide who trust Hosteling to connect
-              them with amazing volunteers. Get started today - it's completely
+              Join hundreds of hostels worldwide who trust
+              Hosteling to connect them with amazing
+              volunteers. Get started today - it's completely
               free.
             </p>
           </div>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" className="px-8" onClick={onSignupClick}>
+            <Button
+              size="lg"
+              className="px-8"
+              onClick={onSignupClick}
+            >
               List Your Hostel Free
               <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
-            <Button variant="outline" size="lg" className="px-8">
+            <Button
+              variant="outline"
+              size="lg"
+              className="px-8"
+            >
               Contact Our Team
             </Button>
           </div>
@@ -581,8 +628,8 @@ export function ForHostels({ onSignupClick }: ForHostelsProps) {
                 <span className="text-lg">Hosteling</span>
               </div>
               <p className="text-muted-foreground text-sm">
-                Connecting volunteers with hostels worldwide. Travel more, spend
-                less.
+                Connecting volunteers with hostels worldwide.
+                Travel more, spend less.
               </p>
             </div>
             <div className="space-y-4">
