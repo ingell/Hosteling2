@@ -7,7 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Checkbox } from "./ui/checkbox";
 import { Slider } from "./ui/slider";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
@@ -594,6 +594,9 @@ export function BrowseVolunteers({ onBack, onVolunteerClick, onContact }: Browse
                       <DialogContent className="max-w-md">
                         <DialogHeader>
                           <DialogTitle>Send Volunteer Request</DialogTitle>
+                          <DialogDescription>
+                            Send a personalized request to this volunteer to join your hostel team.
+                          </DialogDescription>
                         </DialogHeader>
                         <div className="space-y-4">
                           <div className="flex items-center gap-3 p-3 bg-muted rounded-lg">
