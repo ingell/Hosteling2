@@ -9,16 +9,16 @@ import {
   CardHeader,
   CardTitle,
 } from "../../../shared/ui/card";
-import { Alert, AlertDescription } from "../../../shared/ui/alert";
+import { useApp } from "../../../shared/contexts/AppContext";
+import { useLanguage } from "../../../shared/contexts/LanguageContext";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "../../../shared/ui/select";
-import { useApp } from "../../../shared/contexts/AppContext";
-import { useLanguage } from "../../../shared/contexts/LanguageContext";
+} from "../../../../components/ui/select";
+import { Alert, AlertDescription } from "../../../../components/ui/alert";
 
 export function SignupForm() {
   const [formData, setFormData] = useState({
