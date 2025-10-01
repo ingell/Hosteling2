@@ -354,55 +354,6 @@ export function HowItWorks({ onSignupClick }: HowItWorksProps) {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="border-t py-12 px-4">
-        <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="space-y-4">
-              <div className="flex items-center space-x-2">
-                <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-primary-foreground" />
-                </div>
-                <span className="text-lg">Hosteling</span>
-              </div>
-              <p className="text-muted-foreground text-sm">
-                Connecting volunteers with hostels worldwide. Travel more, spend less.
-              </p>
-            </div>
-            <div className="space-y-4">
-              <h4>For Volunteers</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div>How it works</div>
-                <div>Browse opportunities</div>
-                <div>Safety guidelines</div>
-                <div>Community</div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4>For Hostels</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div>List your hostel</div>
-                <div>Find volunteers</div>
-                <div>Pricing</div>
-                <div>Resources</div>
-              </div>
-            </div>
-            <div className="space-y-4">
-              <h4>Support</h4>
-              <div className="space-y-2 text-sm text-muted-foreground">
-                <div>Help center</div>
-                <div>Contact us</div>
-                <div>Terms of service</div>
-                <div>Privacy policy</div>
-              </div>
-            </div>
-          </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            © 2024 Hosteling. All rights reserved.
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

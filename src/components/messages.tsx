@@ -240,9 +240,9 @@ export function Messages({ onBack, userType }: MessagesProps) {
 
   if (selectedConversation && selectedConv) {
     return (
-      <div className="flex flex-col h-screen bg-background">
+      <div className="h-[calc(100vh-64px)] flex flex-col bg-background">
         {/* Chat Header */}
-        <div className="border-b p-4">
+        <div className="border-b p-4 bg-white">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
               <Button variant="ghost" size="sm" onClick={() => setSelectedConversation(null)}>
@@ -280,47 +280,49 @@ export function Messages({ onBack, userType }: MessagesProps) {
         </div>
 
         {/* Messages */}
-        <ScrollArea className="flex-1 p-4">
-          <div className="space-y-4">
-            {selectedConv.messages.map((message, index) => {
-              const isOwn = isCurrentUserMessage(message);
-              const showTime = index === 0 || 
-                new Date(message.timestamp).getTime() - new Date(selectedConv.messages[index - 1].timestamp).getTime() > 300000; // 5 minutes
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full p-4">
+            <div className="space-y-4">
+              {selectedConv.messages.map((message, index) => {
+                const isOwn = isCurrentUserMessage(message);
+                const showTime = index === 0 || 
+                  new Date(message.timestamp).getTime() - new Date(selectedConv.messages[index - 1].timestamp).getTime() > 300000; // 5 minutes
 
-              return (
-                <div key={message.id}>
-                  {showTime && (
-                    <div className="text-center text-xs text-muted-foreground my-4">
-                      {new Date(message.timestamp).toLocaleString()}
-                    </div>
-                  )}
-                  <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[70%] p-3 rounded-lg ${
-                      isOwn 
-                        ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white' 
-                        : 'bg-gray-100 text-gray-900 border'
-                    }`}>
-                      <p className="text-sm">{message.content}</p>
-                      <p className={`text-xs mt-1 ${
-                        isOwn ? 'text-white/80' : 'text-gray-500'
+                return (
+                  <div key={message.id}>
+                    {showTime && (
+                      <div className="text-center text-xs text-muted-foreground my-4">
+                        {new Date(message.timestamp).toLocaleString()}
+                      </div>
+                    )}
+                    <div className={`flex ${isOwn ? 'justify-end' : 'justify-start'}`}>
+                      <div className={`max-w-[70%] p-3 rounded-lg ${
+                        isOwn 
+                          ? 'bg-gradient-to-r from-orange-500 to-yellow-500 text-white' 
+                          : 'bg-gray-100 text-gray-900 border'
                       }`}>
-                        {new Date(message.timestamp).toLocaleTimeString([], { 
-                          hour: '2-digit', 
-                          minute: '2-digit' 
-                        })}
-                      </p>
+                        <p className="text-sm">{message.content}</p>
+                        <p className={`text-xs mt-1 ${
+                          isOwn ? 'text-white/80' : 'text-gray-500'
+                        }`}>
+                          {new Date(message.timestamp).toLocaleTimeString([], { 
+                            hour: '2-digit', 
+                            minute: '2-digit' 
+                          })}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })}
-          </div>
-        </ScrollArea>
+                );
+              })}
+            </div>
+          </ScrollArea>
+        </div>
 
-        {/* Message Input */}
-        <div className="border-t p-4">
-          <div className="flex items-center space-x-2">
-            <Button variant="ghost" size="sm">
+        {/* Message Input - Fixed at bottom */}
+        <div className="border-t p-4 bg-white">
+          <div className="flex items-end space-x-2">
+            <Button variant="ghost" size="sm" className="mb-2">
               <Paperclip className="w-4 h-4" />
             </Button>
             <div className="flex-1 relative">
@@ -335,7 +337,7 @@ export function Messages({ onBack, userType }: MessagesProps) {
                   }
                 }}
                 rows={1}
-                className="resize-none"
+                className="resize-none max-h-32 min-h-[40px]"
               />
               <Button 
                 variant="ghost" 
@@ -345,7 +347,7 @@ export function Messages({ onBack, userType }: MessagesProps) {
                 <Smile className="w-4 h-4" />
               </Button>
             </div>
-            <Button onClick={sendMessage} disabled={!newMessage.trim()}>
+            <Button onClick={sendMessage} disabled={!newMessage.trim()} className="mb-2">
               <Send className="w-4 h-4" />
             </Button>
           </div>
@@ -355,11 +357,11 @@ export function Messages({ onBack, userType }: MessagesProps) {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header */}
-      <div className="border-b">
-        <div className="max-w-4xl mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
+    <div className="h-[calc(100vh-64px)] bg-background">
+      <div className="max-w-4xl mx-auto px-4 py-6 h-full flex flex-col">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex items-center justify-between mb-4">
             <div>
               <Button variant="ghost" onClick={onBack}>
                 ← Back to Dashboard
@@ -368,12 +370,8 @@ export function Messages({ onBack, userType }: MessagesProps) {
               <p className="text-muted-foreground">Communicate with {userType === 'volunteer' ? 'hostels' : 'volunteers'}</p>
             </div>
           </div>
-        </div>
-      </div>
-
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Search */}
-        <div className="mb-6">
+          
+          {/* Search */}
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
             <Input
@@ -386,69 +384,73 @@ export function Messages({ onBack, userType }: MessagesProps) {
         </div>
 
         {/* Conversations List */}
-        <div className="space-y-2">
-          {filteredConversations.map((conversation) => (
-            <Card 
-              key={conversation.id} 
-              className="hover:shadow-md transition-shadow cursor-pointer"
-              onClick={() => {
-                setSelectedConversation(conversation.id);
-                markAsRead(conversation.id);
-              }}
-            >
-              <CardContent className="p-4">
-                <div className="flex items-center space-x-4">
-                  <div className="relative">
-                    <Avatar>
-                      <AvatarImage src={conversation.participantAvatar} alt={conversation.participantName} />
-                      <AvatarFallback>{conversation.participantName.substring(0, 2).toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    {conversation.online && (
-                      <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></div>
-                    )}
-                  </div>
-                  
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <h3 className="font-medium truncate">{conversation.participantName}</h3>
-                        <Badge variant="outline" className="text-xs">
-                          {conversation.participantType}
-                        </Badge>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        {conversation.unreadCount > 0 && (
-                          <Badge className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
-                            {conversation.unreadCount}
-                          </Badge>
-                        )}
-                        <span className="text-xs text-muted-foreground">
-                          {conversation.lastMessageTime}
-                        </span>
-                      </div>
+        <div className="flex-1 overflow-hidden">
+          <ScrollArea className="h-full">
+            <div className="space-y-2">
+            {filteredConversations.map((conversation) => (
+              <Card 
+                key={conversation.id} 
+                className="hover:shadow-md transition-shadow cursor-pointer"
+                onClick={() => {
+                  setSelectedConversation(conversation.id);
+                  markAsRead(conversation.id);
+                }}
+              >
+                <CardContent className="p-4">
+                  <div className="flex items-center space-x-4">
+                    <div className="relative">
+                      <Avatar>
+                        <AvatarImage src={conversation.participantAvatar} alt={conversation.participantName} />
+                        <AvatarFallback>{conversation.participantName.substring(0, 2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      {conversation.online && (
+                        <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></div>
+                      )}
                     </div>
-                    <p className="text-sm text-muted-foreground truncate mt-1">
-                      {conversation.lastMessage}
-                    </p>
+                    
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-2">
+                          <h3 className="font-medium truncate">{conversation.participantName}</h3>
+                          <Badge variant="outline" className="text-xs">
+                            {conversation.participantType}
+                          </Badge>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          {conversation.unreadCount > 0 && (
+                            <Badge className="bg-primary text-primary-foreground text-xs px-2 py-1 rounded-full">
+                              {conversation.unreadCount}
+                            </Badge>
+                          )}
+                          <span className="text-xs text-muted-foreground">
+                            {conversation.lastMessageTime}
+                          </span>
+                        </div>
+                      </div>
+                      <p className="text-sm text-muted-foreground truncate mt-1">
+                        {conversation.lastMessage}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
+                </CardContent>
+              </Card>
+            ))}
+            
+            {filteredConversations.length === 0 && (
+              <div className="text-center py-12">
+                <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
+                <h3 className="text-lg mb-2">No conversations yet</h3>
+                <p className="text-muted-foreground">
+                  {userType === 'volunteer' 
+                    ? "Start applying to hostels to begin conversations" 
+                    : "Volunteers will appear here when they contact you"
+                  }
+                </p>
+              </div>
+            )}
+            </div>
+          </ScrollArea>
         </div>
-
-        {filteredConversations.length === 0 && (
-          <div className="text-center py-12">
-            <MessageCircle className="w-12 h-12 mx-auto mb-4 text-muted-foreground opacity-50" />
-            <h3 className="text-lg mb-2">No conversations yet</h3>
-            <p className="text-muted-foreground">
-              {userType === 'volunteer' 
-                ? "Start applying to hostels to begin conversations" 
-                : "Volunteers will appear here when they contact you"
-              }
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
