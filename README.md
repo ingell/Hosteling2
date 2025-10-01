@@ -17,6 +17,7 @@
 - ⭐ **Reviews & Ratings** - Read experiences from other volunteers and share your own
 - 🎯 **Flexible Arrangements** - Find opportunities from 1 week to 6+ months
 - 🌐 **Global Network** - Access opportunities across all continents, from bustling cities to remote islands
+- 🌍 **Multi-Language Support** - Available in English and Spanish with more languages coming
 
 ### For Hostels
 - 📋 **Create Listings** - Post volunteer opportunities with detailed descriptions
@@ -24,6 +25,13 @@
 - 📅 **Easy Management** - Simple dashboard to manage applications and communicate with volunteers
 - 💯 **100% Free** - No commissions, booking fees, or hidden costs
 - 🤝 **Community Building** - Build lasting connections with international travelers
+
+### Admin Features
+- 🛡️ **Admin Dashboard** - Comprehensive admin panel for platform management
+- 👥 **User Management** - Monitor and manage registered users
+- 🏢 **Hostel Management** - Review and manage hostel listings
+- 📧 **Email Management** - Bulk email capabilities for platform communication
+- 📊 **Analytics & Statistics** - Track platform growth and engagement metrics
 
 ---
 
@@ -80,28 +88,52 @@ npx serve build
 ```
 Hosteling2/
 ├── src/
-│   ├── components/          # React components
-│   │   ├── ui/             # Reusable UI components (buttons, cards, etc.)
+│   ├── components/          # Legacy React components (being migrated)
+│   │   ├── ui/             # Reusable UI components (Radix UI primitives)
 │   │   ├── figma/          # Design-specific components
-│   │   ├── utils/          # Utility components and helpers
-│   │   ├── about.tsx       # About page
-│   │   ├── for-hostels.tsx # Information for hostel owners
-│   │   ├── how-it-works.tsx # User guide
-│   │   ├── logged-in-view.tsx # Dashboard for logged-in users
-│   │   ├── signup-flow.tsx # User registration
+│   │   ├── features/       # Feature-specific components
+│   │   ├── shared/         # Shared utility components
 │   │   └── ...             # Other feature components
+│   ├── src/                # New modular architecture
+│   │   ├── components/     # Reusable components
+│   │   ├── contexts/       # React Context providers
+│   │   │   ├── AppContext.tsx        # Main app state
+│   │   │   ├── AdminContext.tsx      # Admin authentication
+│   │   │   ├── LanguageContext.tsx   # i18n language management
+│   │   │   └── translations/         # Language files (en, es)
+│   │   ├── features/       # Feature modules
+│   │   │   ├── authentication/      # Auth-related features
+│   │   │   └── hostels/             # Hostel-related features
+│   │   ├── layouts/        # Layout components
+│   │   │   ├── Layout.tsx           # Main layout wrapper
+│   │   │   ├── Header.tsx           # Navigation header
+│   │   │   └── Footer.tsx           # Site footer
+│   │   ├── pages/          # Route-level page components
+│   │   │   ├── LandingPage.tsx      # Homepage
+│   │   │   ├── BrowsePage.tsx       # Browse hostels
+│   │   │   ├── DashboardPage.tsx    # User dashboard
+│   │   │   ├── AdminDashboardPage.tsx # Admin panel
+│   │   │   ├── AdminLoginPage.tsx   # Admin authentication
+│   │   │   └── ...                  # Other pages
+│   │   ├── router/         # Routing configuration
+│   │   │   └── AppRouter.tsx        # Route definitions
+│   │   ├── services/       # API and external services
+│   │   ├── shared/         # Shared utilities and components
+│   │   └── utils/          # Helper functions
 │   ├── types/              # TypeScript type definitions
 │   ├── guidelines/         # Project guidelines and documentation
-│   ├── App.tsx             # Main application component
+│   ├── ARCHITECTURE.md     # Detailed architecture documentation
+│   ├── App.tsx             # Root application component
 │   ├── main.tsx            # Application entry point
-│   └── Attributions.md     # Asset and library attributions
+│   └── index.css           # Global styles
 ├── public/                 # Static assets (CNAME, 404.html)
 ├── index.html              # HTML template with SPA routing support
 ├── vite.config.ts          # Vite configuration
 ├── package.json            # Project dependencies and scripts
-├── DEPLOYMENT.md           # Detailed deployment guide
 └── README.md               # This file
 ```
+
+For detailed architecture information, see [ARCHITECTURE.md](src/ARCHITECTURE.md).
 
 ---
 
@@ -110,6 +142,7 @@ Hosteling2/
 ### User Flows
 - **Volunteer Journey**: Profile creation → Browse hostels → Apply → Connect → Volunteer
 - **Hostel Journey**: Create listing → Review applications → Message volunteers → Host
+- **Admin Journey**: Admin login → Dashboard → Manage users/hostels → Monitor analytics
 
 ### Main Views
 - **Landing Page**: Hero section with call-to-action and featured hostels
@@ -118,6 +151,14 @@ Hosteling2/
 - **Browse**: Search and filter hostel opportunities
 - **Profile**: User dashboard with applications and messages
 - **Hostel Detail**: Comprehensive view of volunteer opportunities
+- **Admin Dashboard**: Platform management and analytics panel
+
+### Architecture Highlights
+- **Modular Structure**: Clean separation between pages, components, and features
+- **Context-Based State**: AppContext for app state, AdminContext for admin features, LanguageContext for i18n
+- **Protected Routes**: Role-based access control for user and admin areas
+- **Internationalization**: Multi-language support with easy expansion
+- **Type Safety**: Full TypeScript implementation throughout
 
 ---
 
@@ -130,8 +171,7 @@ This application is deployed to [hostelingapp.com](https://hostelingapp.com) via
 - ✅ Custom domain with CNAME configuration
 - ✅ SPA routing support for client-side navigation
 - ✅ Optimized asset loading with relative paths
-
-For detailed deployment information, troubleshooting, and configuration details, see [DEPLOYMENT.md](./DEPLOYMENT.md).
+- ✅ Admin panel with secure authentication
 
 ---
 
@@ -139,16 +179,25 @@ For detailed deployment information, troubleshooting, and configuration details,
 
 ### Available Scripts
 
-- `npm run dev` - Start development server with hot reload
+- `npm run dev` - Start development server with hot reload at `http://localhost:5173`
 - `npm run build` - Create production build
 
 ### Code Style
 
 The project uses:
-- TypeScript for type safety
-- React functional components with hooks
-- Tailwind CSS for styling
-- Radix UI for accessible component primitives
+- **TypeScript** for type safety across the entire codebase
+- **React functional components** with hooks
+- **Tailwind CSS** for styling with custom design system
+- **Radix UI** for accessible component primitives
+- **Modular architecture** with clear separation of concerns
+
+### Development Workflow
+
+1. **Context Providers**: Use existing contexts (AppContext, AdminContext, LanguageContext) or create new ones as needed
+2. **New Pages**: Add page components to `src/src/pages/` and register routes in `src/src/router/AppRouter.tsx`
+3. **New Features**: Create feature modules in `src/src/features/` for complex functionality
+4. **Components**: Place reusable components in `src/src/components/` or `src/components/ui/`
+5. **Translations**: Add new strings to `src/src/contexts/translations/` for i18n support
 
 ---
 
@@ -175,16 +224,28 @@ We welcome contributions! Here's how you can help:
 
 ## 📋 Features Roadmap
 
-- [ ] User authentication and authorization
+### ✅ Completed
+- [x] User authentication and authorization
+- [x] Admin dashboard and management system
+- [x] Multi-language support (English & Spanish)
+- [x] Responsive design with Tailwind CSS
+- [x] Protected routes for users and admins
+- [x] Context-based state management
+
+### 🚧 In Progress
 - [ ] Real-time messaging system
 - [ ] Advanced search and filtering
+- [ ] Review and rating system
+
+### 📅 Planned
 - [ ] Mobile application
-- [ ] Multi-language support
+- [ ] Additional language support (French, German, Portuguese)
 - [ ] Email notifications
 - [ ] Payment integration for premium features
-- [ ] Review and rating system
 - [ ] Calendar integration for availability
 - [ ] Photo gallery for hostels
+- [ ] Push notifications
+- [ ] Social media integration
 
 ---
 
