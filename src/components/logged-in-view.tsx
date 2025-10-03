@@ -10,9 +10,9 @@ import { VolunteerProfile } from "./volunteer-profile";
 import { HostelProfile } from "./hostel-profile";
 import { EditVolunteerProfile } from "./edit-volunteer-profile";
 import { EditHostelProfile } from "./edit-hostel-profile";
-import { BrowseHostels } from "./browse-hostels";
+import { BrowseHostelsPage } from "./pages/browse/BrowseHostelsPage";
 import { BrowseVolunteers } from "./browse-volunteers";
-import { Messages } from "./messages";
+import { MessagesPage } from "./pages/communication/MessagesPage";
 import { Notifications } from "./notifications";
 import { VolunteerRequests } from "./volunteer-requests";
 import { LocalStorageManager } from "./utils/local-storage";
@@ -180,7 +180,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
 
   if (currentView === "browse-hostels") {
     return (
-      <BrowseHostels 
+      <BrowseHostelsPage 
         onBack={() => setCurrentView("dashboard")}
         onHostelClick={handleHostelClick}
         onApply={handleApplyToHostel}
@@ -199,7 +199,7 @@ export function LoggedInView({ userType, onLogout }: LoggedInViewProps) {
   }
 
   if (currentView === "messages") {
-    return <Messages onBack={() => setCurrentView("dashboard")} userType={userType} />;
+    return <MessagesPage onBack={() => setCurrentView("dashboard")} />;
   }
 
   if (currentView === "notifications") {
