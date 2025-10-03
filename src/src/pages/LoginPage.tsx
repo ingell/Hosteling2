@@ -1,11 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { LoginFlow } from '../../components/login-flow';
-import { useAppContext } from '../contexts/AppContext';
+import { useApp } from '../shared/contexts/AppContext';
 
 export const LoginPage: React.FC = () => {
   const navigate = useNavigate();
-  const { handleLogin, isLoggedIn } = useAppContext();
+  const { login, isLoggedIn } = useApp();
 
   // Redirect to dashboard if already logged in
   React.useEffect(() => {
@@ -14,9 +14,9 @@ export const LoginPage: React.FC = () => {
     }
   }, [isLoggedIn, navigate]);
 
-  const onLogin = (credentials: { email: string; password: string; type: 'volunteer' | 'hostel' }) => {
-    handleLogin(credentials);
-    if (credentials) {
+  const onLogin = async (credentials: { email: string; password: string; type: 'volunteer' | 'hostel' }) => {
+    const success = await login(credentials.email, credentials.password);
+    if (success) {
       navigate('/dashboard');
     }
   };

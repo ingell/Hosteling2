@@ -1,17 +1,18 @@
 import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { Input } from "./ui/input";
-import { Label } from "./ui/label";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
-import { Checkbox } from "./ui/checkbox";
-import { Textarea } from "./ui/textarea";
-import { Badge } from "./ui/badge";
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
-import { Progress } from "./ui/progress";
-import { Switch } from "./ui/switch";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { Button } from "../../ui/button";
+import { Input } from "../../ui/input";
+import { Label } from "../../ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "../../ui/select";
+import { Checkbox } from "../../ui/checkbox";
+import { Textarea } from "../../ui/textarea";
+import { Badge } from "../../ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "../../ui/card";
+import { Progress } from "../../ui/progress";
+import { Switch } from "../../ui/switch";
+import { ImageWithFallback } from "../../figma/ImageWithFallback";
 import { motion, AnimatePresence } from "motion/react";
 import { ArrowLeft, ArrowRight, MapPin, Star, Upload, Plus, X } from "lucide-react";
+import hostelOptions from "../../../data/hostel-options.json";
 
 interface HostelSignupData {
   // Step 1 - Basic Information
@@ -71,34 +72,6 @@ const initialData: HostelSignupData = {
   languages: [],
   photos: []
 };
-
-const volunteerRoleOptions = [
-  "Reception", "Cleaning", "Maintenance", "Kitchen", "Bar help", "Housekeeping",
-  "Social media", "Marketing", "Photography", "Tours", "Events", "Teaching",
-  "Web design", "Gardening", "Pet care", "Administration", "Night shift", "Laundry"
-];
-
-const amenityOptions = [
-  "Free WiFi", "Breakfast included", "Kitchen access", "Laundry", "Luggage storage",
-  "Common room", "Garden/Terrace", "Bar", "Tours", "Bike rental", "Pool", "Gym",
-  "Game room", "Library", "Coworking space", "24/7 reception"
-];
-
-const languageOptions = [
-  "English", "Spanish", "Portuguese", "French", "German", "Italian", 
-  "Dutch", "Chinese", "Japanese", "Korean", "Thai", "Vietnamese"
-];
-
-const countries = [
-  "United States", "United Kingdom", "Canada", "Australia", "Germany", 
-  "France", "Spain", "Italy", "Netherlands", "Brazil", "Argentina", 
-  "Thailand", "Vietnam", "Japan", "South Korea", "Peru", "Colombia", "Other"
-];
-
-const hostelTypes = [
-  "Backpacker Hostel", "Boutique Hostel", "Party Hostel", "Quiet Hostel",
-  "Family-friendly Hostel", "Eco Hostel", "Luxury Hostel", "Budget Hostel"
-];
 
 interface HostelSignupFlowProps {
   onComplete: (data: HostelSignupData) => void;
@@ -261,7 +234,7 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                     <SelectValue placeholder="Select your country" />
                   </SelectTrigger>
                   <SelectContent>
-                    {countries.map((country) => (
+                    {hostelOptions.countries.map((country) => (
                       <SelectItem key={country} value={country}>
                         {country}
                       </SelectItem>
@@ -298,7 +271,7 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                     <SelectValue placeholder="What type of hostel is it?" />
                   </SelectTrigger>
                   <SelectContent>
-                    {hostelTypes.map((type) => (
+                    {hostelOptions.hostelTypes.map((type) => (
                       <SelectItem key={type} value={type}>
                         {type}
                       </SelectItem>
@@ -354,7 +327,7 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                   Select all the tasks volunteers can help with
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  {volunteerRoleOptions.map((role) => (
+                  {hostelOptions.volunteerRoles.map((role) => (
                     <div key={role} className="flex items-center space-x-2">
                       <Checkbox
                         id={role}
@@ -376,10 +349,11 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                     <SelectValue placeholder="What accommodation do you provide?" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="shared-dorm">Shared Dormitory Bed</SelectItem>
-                    <SelectItem value="private-dorm">Private Dormitory</SelectItem>
-                    <SelectItem value="private-room">Private Room</SelectItem>
-                    <SelectItem value="staff-quarters">Staff Quarters</SelectItem>
+                    {hostelOptions.accommodationTypes.map((type) => (
+                      <SelectItem key={type.value} value={type.value}>
+                        {type.label}
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
@@ -418,10 +392,11 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                       <SelectValue placeholder="Hours" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="3-4">3-4 hours</SelectItem>
-                      <SelectItem value="4-5">4-5 hours</SelectItem>
-                      <SelectItem value="5-6">5-6 hours</SelectItem>
-                      <SelectItem value="6-8">6-8 hours</SelectItem>
+                      {hostelOptions.workHours.map((hours) => (
+                        <SelectItem key={hours.value} value={hours.value}>
+                          {hours.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -432,10 +407,11 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                       <SelectValue placeholder="Min" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1-week">1 week</SelectItem>
-                      <SelectItem value="2-weeks">2 weeks</SelectItem>
-                      <SelectItem value="1-month">1 month</SelectItem>
-                      <SelectItem value="2-months">2 months</SelectItem>
+                      {hostelOptions.stayDurations.minimum.map((duration) => (
+                        <SelectItem key={duration.value} value={duration.value}>
+                          {duration.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -446,10 +422,11 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                       <SelectValue placeholder="Max" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="1-month">1 month</SelectItem>
-                      <SelectItem value="3-months">3 months</SelectItem>
-                      <SelectItem value="6-months">6 months</SelectItem>
-                      <SelectItem value="no-limit">No limit</SelectItem>
+                      {hostelOptions.stayDurations.maximum.map((duration) => (
+                        <SelectItem key={duration.value} value={duration.value}>
+                          {duration.label}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                 </div>
@@ -498,7 +475,7 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                   Select all amenities your hostel offers
                 </p>
                 <div className="grid grid-cols-2 gap-2">
-                  {amenityOptions.map((amenity) => (
+                  {hostelOptions.amenities.map((amenity) => (
                     <div key={amenity} className="flex items-center space-x-2">
                       <Checkbox
                         id={amenity}
@@ -519,7 +496,7 @@ export function HostelSignupFlow({ onComplete, onBack }: HostelSignupFlowProps) 
                   What languages can your team communicate in?
                 </p>
                 <div className="grid grid-cols-3 gap-2">
-                  {languageOptions.map((language) => (
+                  {hostelOptions.languages.map((language) => (
                     <div key={language} className="flex items-center space-x-2">
                       <Checkbox
                         id={language}

@@ -1,7 +1,7 @@
 import React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-import { AppProvider } from './src/contexts/AppContext';
-import { LanguageProvider } from './src/contexts/LanguageContext';
+import { AppProvider } from './src/shared/contexts/AppContext';
+import { LanguageProvider } from './src/shared/contexts/LanguageContext';
 import { AdminProvider } from './src/contexts/AdminContext';
 import { AppRouter } from './src/router/AppRouter';
 import { Toaster } from './components/ui/sonner';

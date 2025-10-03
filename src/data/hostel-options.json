@@ -1,0 +1,158 @@
+{
+  "volunteerRoles": [
+    "Reception",
+    "Cleaning", 
+    "Maintenance",
+    "Kitchen",
+    "Bar help",
+    "Housekeeping",
+    "Social media",
+    "Marketing",
+    "Photography",
+    "Tours",
+    "Events",
+    "Teaching",
+    "Web design",
+    "Gardening",
+    "Pet care",
+    "Administration",
+    "Night shift",
+    "Laundry"
+  ],
+  "amenities": [
+    "Free WiFi",
+    "Breakfast included",
+    "Kitchen access",
+    "Laundry",
+    "Luggage storage",
+    "Common room",
+    "Garden/Terrace",
+    "Bar",
+    "Tours",
+    "Bike rental",
+    "Pool",
+    "Gym",
+    "Game room",
+    "Library",
+    "Coworking space",
+    "24/7 reception"
+  ],
+  "languages": [
+    "English",
+    "Spanish",
+    "Portuguese",
+    "French",
+    "German",
+    "Italian",
+    "Dutch",
+    "Chinese",
+    "Japanese",
+    "Korean",
+    "Thai",
+    "Vietnamese"
+  ],
+  "countries": [
+    "United States",
+    "United Kingdom",
+    "Canada",
+    "Australia",
+    "Germany",
+    "France",
+    "Spain",
+    "Italy",
+    "Netherlands",
+    "Brazil",
+    "Argentina",
+    "Thailand",
+    "Vietnam",
+    "Japan",
+    "South Korea",
+    "Peru",
+    "Colombia",
+    "Other"
+  ],
+  "hostelTypes": [
+    "Backpacker Hostel",
+    "Boutique Hostel",
+    "Party Hostel",
+    "Quiet Hostel",
+    "Family-friendly Hostel",
+    "Eco Hostel",
+    "Luxury Hostel",
+    "Budget Hostel"
+  ],
+  "accommodationTypes": [
+    {
+      "value": "shared-dorm",
+      "label": "Shared Dormitory Bed"
+    },
+    {
+      "value": "private-dorm", 
+      "label": "Private Dormitory"
+    },
+    {
+      "value": "private-room",
+      "label": "Private Room"
+    },
+    {
+      "value": "staff-quarters",
+      "label": "Staff Quarters"
+    }
+  ],
+  "workHours": [
+    {
+      "value": "3-4",
+      "label": "3-4 hours"
+    },
+    {
+      "value": "4-5",
+      "label": "4-5 hours"
+    },
+    {
+      "value": "5-6",
+      "label": "5-6 hours"
+    },
+    {
+      "value": "6-8",
+      "label": "6-8 hours"
+    }
+  ],
+  "stayDurations": {
+    "minimum": [
+      {
+        "value": "1-week",
+        "label": "1 week"
+      },
+      {
+        "value": "2-weeks",
+        "label": "2 weeks"
+      },
+      {
+        "value": "1-month",
+        "label": "1 month"
+      },
+      {
+        "value": "2-months",
+        "label": "2 months"
+      }
+    ],
+    "maximum": [
+      {
+        "value": "1-month",
+        "label": "1 month"
+      },
+      {
+        "value": "3-months",
+        "label": "3 months"
+      },
+      {
+        "value": "6-months",
+        "label": "6 months"
+      },
+      {
+        "value": "no-limit",
+        "label": "No limit"
+      }
+    ]
+  }
+}

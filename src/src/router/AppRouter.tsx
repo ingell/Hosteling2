@@ -1,6 +1,6 @@
 import React from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
-import { useAppContext } from '../contexts/AppContext';
+import { useApp } from '../shared/contexts/AppContext';
 import { useAdmin } from '../contexts/AdminContext';
 
 // Pages
@@ -29,7 +29,7 @@ import { Layout } from '../layouts/Layout';
 
 // Protected route component
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { isLoggedIn } = useAppContext();
+  const { isLoggedIn } = useApp();
   
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -50,7 +50,7 @@ const AdminProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children
 };
 
 export const AppRouter: React.FC = () => {
-  const { isLoggedIn } = useAppContext();
+  const { isLoggedIn } = useApp();
 
   return (
     <Routes>

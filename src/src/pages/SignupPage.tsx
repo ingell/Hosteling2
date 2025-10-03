@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { SignupChoice } from '../../components/signup-choice';
 import { SignupFlow } from '../../components/signup-flow';
 import { HostelSignupFlow } from '../../components/hostel-signup-flow';
-import { useAppContext } from '../contexts/AppContext';
+import { useApp } from '../shared/contexts/AppContext';
 
 type SignupStep = 'choice' | 'volunteer-signup' | 'hostel-signup';
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();
-  const { handleSignupComplete, isLoggedIn } = useAppContext();
+  const { signup, isLoggedIn } = useApp();
   const [currentStep, setCurrentStep] = useState<SignupStep>('choice');
 
   // Redirect to dashboard if already logged in
@@ -27,9 +27,12 @@ export const SignupPage: React.FC = () => {
     }
   };
 
-  const onSignupComplete = (data: any, type: 'volunteer' | 'hostel') => {
-    handleSignupComplete(data, type);
-    navigate('/dashboard');
+  const onSignupComplete = async (data: any, type: 'volunteer' | 'hostel') => {
+    const signupData = { ...data, userType: type };
+    const success = await signup(signupData);
+    if (success) {
+      navigate('/dashboard');
+    }
   };
 
   const onBack = () => {

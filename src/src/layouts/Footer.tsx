@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Users } from 'lucide-react';
+import hostelingLogo from 'figma:asset/bbf68b3edaa3adc76aa448f54dec7f61afe7db87.png';
 
 export const Footer: React.FC = () => {
   return (
@@ -8,12 +9,13 @@ export const Footer: React.FC = () => {
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div className="space-y-4">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                <Users className="w-5 h-5 text-primary-foreground" />
-              </div>
-              <span className="text-lg">Hosteling</span>
-            </div>
+            <Link to="/" className="flex items-center">
+              <img 
+                src={hostelingLogo} 
+                alt="Hosteling - Work. stay. belong. live local." 
+                className="h-10 w-auto hover:opacity-90 transition-opacity"
+              />
+            </Link>
             <p className="text-muted-foreground text-sm">
               Connecting volunteers with hostels worldwide. Travel more, spend less.
             </p>

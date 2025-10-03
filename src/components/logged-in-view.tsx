@@ -18,7 +18,7 @@ import { VolunteerRequests } from "./volunteer-requests";
 import { LocalStorageManager } from "./utils/local-storage";
 import { API } from "./utils/api";
 import { Search, MapPin, Star, MessageCircle, Bell, Settings, User, Calendar, Filter, Heart, Plus, Users, BarChart3, TrendingUp, Clock } from "lucide-react";
-import { useLanguage } from "../src/contexts/LanguageContext";
+import { useLanguage } from "../src/shared/contexts/LanguageContext";
 
 interface LoggedInViewProps {
   userType: "volunteer" | "hostel";

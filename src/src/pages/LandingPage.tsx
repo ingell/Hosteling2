@@ -8,7 +8,7 @@ import { SearchWithSuggestions } from '../../components/common/SearchWithSuggest
 import { MapPin, Heart, Globe, Users, Clock } from 'lucide-react';
 import { motion } from 'motion/react';
 import { featuredHostels } from '../../constants/data';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../shared/contexts/LanguageContext';
 
 const benefits = [
   { icon: <Heart className="w-6 h-6" />, title: "100% Free", description: "No booking fees or commissions. Connect directly with hostels at zero cost." },

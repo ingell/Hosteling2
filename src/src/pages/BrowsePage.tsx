@@ -7,7 +7,7 @@ import { ImageWithFallback } from '../../components/figma/ImageWithFallback';
 import { SearchWithSuggestions } from '../../components/common/SearchWithSuggestions';
 import { MapPin } from 'lucide-react';
 import { featuredHostels } from '../../constants/data';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../shared/contexts/LanguageContext';
 
 export const BrowsePage: React.FC = () => {
   const { t } = useLanguage();
