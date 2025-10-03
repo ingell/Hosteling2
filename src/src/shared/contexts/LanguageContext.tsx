@@ -63,6 +63,17 @@ const translations: Translations = {
   'header.logout': { en: 'Logout', es: 'Cerrar sesión' },
   'header.admin': { en: 'Admin', es: 'Admin' },
   
+  // Landing page
+  'landing.hero.title': { 
+    en: 'Discover the World Through Volunteering', 
+    es: 'Descubre el Mundo a Través del Voluntariado' 
+  },
+  'landing.hero.subtitle': { 
+    en: 'Connect with amazing hostels worldwide and gain unforgettable experiences while helping local communities. Work, learn, and explore like never before.',
+    es: 'Conecta con albergues increíbles en todo el mundo y obtén experiencias inolvidables mientras ayudas a las comunidades locales. Trabaja, aprende y explora como nunca antes.'
+  },
+  'landing.hero.startVolunteering': { en: 'Start Volunteering', es: 'Comenzar Voluntariado' },
+
   // Footer
   'footer.about': { en: 'About', es: 'Acerca de' },
   'footer.help': { en: 'Help Center', es: 'Centro de Ayuda' },

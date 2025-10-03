@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '../../components/ui/button';
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../../components/ui/dropdown-menu';
+import { Button } from '../shared/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '../shared/ui/dropdown-menu';
 import { Globe } from 'lucide-react';
-import { useLanguage, Language } from '../contexts/LanguageContext';
+import { useLanguage, Language } from '../shared/contexts/LanguageContext';
 
 const LANGUAGES = [
   { code: 'en' as Language, name: 'English', flag: '🇺🇸' },

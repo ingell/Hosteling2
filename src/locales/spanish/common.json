@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Hosteling",
+    "tagline": "Conecta con albergues de todo el mundo para oportunidades de voluntariado"
+  },
+  "landing": {
+    "hero": {
+      "title": "Descubre el Mundo a Través del Voluntariado",
+      "subtitle": "Conecta con albergues increíbles en todo el mundo y obtén experiencias inolvidables mientras ayudas a las comunidades locales. Trabaja, aprende y explora como nunca antes.",
+      "startVolunteering": "Comenzar Voluntariado"
+    }
+  },
+  "navigation": {
+    "home": "Inicio",
+    "browse_hostels": "Explorar Albergues",
+    "browse_volunteers": "Explorar Voluntarios",
+    "for_hostels": "Para Albergues",
+    "how_it_works": "Cómo Funciona",
+    "help": "Ayuda",
+    "login": "Iniciar Sesión",
+    "signup": "Registrarse",
+    "dashboard": "Panel",
+    "profile": "Perfil",
+    "messages": "Mensajes",
+    "notifications": "Notificaciones",
+    "logout": "Cerrar Sesión"
+  },
+  "buttons": {
+    "continue": "Continuar",
+    "back": "Atrás",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "submit": "Enviar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "apply": "Aplicar",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "view_more": "Ver Más",
+    "contact": "Contactar",
+    "get_started": "Comenzar"
+  },
+  "forms": {
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
+    "first_name": "Nombre",
+    "last_name": "Apellido",
+    "phone": "Teléfono",
+    "country": "País",
+    "city": "Ciudad",
+    "address": "Dirección",
+    "description": "Descripción",
+    "required_field": "Este campo es obligatorio",
+    "invalid_email": "Por favor ingresa un correo electrónico válido",
+    "password_min_length": "La contraseña debe tener al menos 8 caracteres"
+  },
+  "messages": {
+    "success": "¡Éxito!",
+    "error": "Ocurrió un error",
+    "loading": "Cargando...",
+    "no_results": "No se encontraron resultados",
+    "try_again": "Por favor intenta de nuevo"
+  }
+}

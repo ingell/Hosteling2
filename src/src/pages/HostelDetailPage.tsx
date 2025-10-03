@@ -1,14 +1,14 @@
 import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { HostelDetailView } from '../../components/hostel-detail-view';
-import { useAppContext } from '../contexts/AppContext';
+import { useApp } from '../shared/contexts/AppContext';
 import { LocalStorageManager } from '../../components/utils/local-storage';
 import { featuredHostels } from '../../constants/data';
 
 export const HostelDetailPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { userType, isLoggedIn } = useAppContext();
+  const { userType, isLoggedIn } = useApp();
 
   const hostel = featuredHostels.find(h => h.id === parseInt(id || '0'));
 
