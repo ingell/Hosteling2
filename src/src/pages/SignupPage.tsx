@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { SignupChoice } from '../../components/signup-choice';
 import { SignupFlow } from '../../components/signup-flow';
-import { HostelSignupFlow } from '../../components/hostel-signup-flow';
+import { HostelSignupFlow } from '../../components/features/auth/HostelSignupFlow';
 import { useApp } from '../shared/contexts/AppContext';
 
 type SignupStep = 'choice' | 'volunteer-signup' | 'hostel-signup';

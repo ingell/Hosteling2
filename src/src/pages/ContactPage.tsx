@@ -1,6 +1,10 @@
 import React from 'react';
-import { Contact } from '../../components/contact';
+import { ContactPage as ContactPageComponent } from '../../components/pages/static/ContactPage';
 
 export const ContactPage: React.FC = () => {
-  return <Contact />;
+  const handleBack = () => {
+    window.history.back();
+  };
+  
+  return <ContactPageComponent onBack={handleBack} />;
 };

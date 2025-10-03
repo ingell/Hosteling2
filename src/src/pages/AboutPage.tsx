@@ -1,6 +1,10 @@
 import React from 'react';
-import { About } from '../../components/about';
+import { AboutPage as AboutPageComponent } from '../../components/pages/static/AboutPage';
 
 export const AboutPage: React.FC = () => {
-  return <About />;
+  const handleBack = () => {
+    window.history.back();
+  };
+  
+  return <AboutPageComponent onBack={handleBack} />;
 };
