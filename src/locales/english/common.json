@@ -1,0 +1,64 @@
+{
+  "app": {
+    "name": "Hosteling",
+    "tagline": "Connect with hostels worldwide for volunteer opportunities"
+  },
+  "landing": {
+    "hero": {
+      "title": "Discover the World Through Volunteering",
+      "subtitle": "Connect with amazing hostels worldwide and gain unforgettable experiences while helping local communities. Work, learn, and explore like never before.",
+      "startVolunteering": "Start Volunteering"
+    }
+  },
+  "navigation": {
+    "home": "Home",
+    "browse_hostels": "Browse Hostels",
+    "browse_volunteers": "Browse Volunteers",
+    "for_hostels": "For Hostels",
+    "how_it_works": "How It Works",
+    "help": "Help",
+    "login": "Login",
+    "signup": "Sign Up",
+    "dashboard": "Dashboard",
+    "profile": "Profile",
+    "messages": "Messages",
+    "notifications": "Notifications",
+    "logout": "Logout"
+  },
+  "buttons": {
+    "continue": "Continue",
+    "back": "Back",
+    "save": "Save",
+    "cancel": "Cancel",
+    "submit": "Submit",
+    "edit": "Edit",
+    "delete": "Delete",
+    "apply": "Apply",
+    "search": "Search",
+    "filter": "Filter",
+    "view_more": "View More",
+    "contact": "Contact",
+    "get_started": "Get Started"
+  },
+  "forms": {
+    "email": "Email",
+    "password": "Password",
+    "first_name": "First Name",
+    "last_name": "Last Name",
+    "phone": "Phone",
+    "country": "Country",
+    "city": "City",
+    "address": "Address",
+    "description": "Description",
+    "required_field": "This field is required",
+    "invalid_email": "Please enter a valid email address",
+    "password_min_length": "Password must be at least 8 characters"
+  },
+  "messages": {
+    "success": "Success!",
+    "error": "An error occurred",
+    "loading": "Loading...",
+    "no_results": "No results found",
+    "try_again": "Please try again"
+  }
+}

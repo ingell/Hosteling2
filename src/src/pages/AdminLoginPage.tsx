@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../..
 import { Alert, AlertDescription } from '../../components/ui/alert';
 import { Shield, Users } from 'lucide-react';
 import { useAdmin } from '../contexts/AdminContext';
-import { useLanguage } from '../contexts/LanguageContext';
+import { useLanguage } from '../shared/contexts/LanguageContext';
 
 export const AdminLoginPage: React.FC = () => {
   const [username, setUsername] = useState('');

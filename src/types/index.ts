@@ -44,7 +44,7 @@ export interface HostelProfile {
 
 export interface UserData {
   id: string;
-  type: "volunteer" | "hostel";
+  type: 'volunteer' | 'hostel';
   isLoggedIn: boolean;
   profile: VolunteerProfile | HostelProfile;
   savedItems: string[];
@@ -69,7 +69,7 @@ export interface Hostel {
 export interface Application {
   id: string;
   hostelId: string;
-  status: "pending" | "accepted" | "rejected";
+  status: 'pending' | 'accepted' | 'rejected';
   appliedDate: string;
   message?: string;
 }
@@ -87,38 +87,38 @@ export interface Message {
 
 export interface Notification {
   id?: string;
-  type: "success" | "error" | "warning" | "info" | "system";
+  type: 'success' | 'error' | 'warning' | 'info' | 'system';
   title: string;
   message: string;
-  priority: "low" | "medium" | "high";
+  priority: 'low' | 'medium' | 'high';
   timestamp?: string;
   read?: boolean;
 }
 
 // UI and Navigation Types
-export type ViewType =
-  | "landing"
-  | "signup-choice"
-  | "signup"
-  | "hostel-signup"
-  | "how-it-works"
-  | "for-hostels"
-  | "logged-in"
-  | "login"
-  | "hostel-detail"
-  | "browse"
-  | "volunteer-community"
-  | "safety-guidelines"
-  | "about"
-  | "help-center"
-  | "contact"
-  | "terms"
-  | "privacy";
+export type ViewType = 
+  | 'landing'
+  | 'signup-choice' 
+  | 'signup' 
+  | 'hostel-signup' 
+  | 'how-it-works' 
+  | 'for-hostels' 
+  | 'logged-in' 
+  | 'login' 
+  | 'hostel-detail' 
+  | 'browse' 
+  | 'volunteer-community' 
+  | 'safety-guidelines' 
+  | 'about' 
+  | 'help-center' 
+  | 'contact' 
+  | 'terms' 
+  | 'privacy';
 
 export interface LoginCredentials {
   email: string;
   password: string;
-  type: "volunteer" | "hostel";
+  type: 'volunteer' | 'hostel';
 }
 
 // Component Props Types
@@ -129,7 +129,7 @@ export interface SearchProps {
 }
 
 export interface BenefitItem {
-  icon: React.ReactNode; // Ensure the icon can accept JSX elements
+  icon: React.ReactNode;
   title: string;
   description: string;
 }
