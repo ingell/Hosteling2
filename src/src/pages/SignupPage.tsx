@@ -1,56 +1,65 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { SignupChoice } from '../../components/signup-choice';
-import { SignupFlow } from '../../components/signup-flow';
-import { HostelSignupFlow } from '../../components/hostel-signup-flow';
-import { useApp } from '../shared/contexts/AppContext';
-
-type SignupStep = 'choice' | 'volunteer-signup' | 'hostel-signup';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { SignupChoice } from "../../components/signup-choice";
+import { SignupFlow } from "../../components/signup-flow";
+import { useApp } from "../shared/contexts/AppContext";
+import { HostelSignupFlow } from "../../components/features/auth/HostelSignupFlow";
+type SignupStep = "choice" | "volunteer-signup" | "hostel-signup";
 
 export const SignupPage: React.FC = () => {
   const navigate = useNavigate();
   const { signup, isLoggedIn } = useApp();
-  const [currentStep, setCurrentStep] = useState<SignupStep>('choice');
+  const [currentStep, setCurrentStep] = useState<SignupStep>("choice");
 
   // Redirect to dashboard if already logged in
   React.useEffect(() => {
     if (isLoggedIn) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   }, [isLoggedIn, navigate]);
 
-  const onChoice = (type: 'volunteer' | 'hostel') => {
-    if (type === 'volunteer') {
-      setCurrentStep('volunteer-signup');
+  const onChoice = (type: "volunteer" | "hostel") => {
+    if (type === "volunteer") {
+      setCurrentStep("volunteer-signup");
     } else {
-      setCurrentStep('hostel-signup');
+      setCurrentStep("hostel-signup");
     }
   };
 
-  const onSignupComplete = async (data: any, type: 'volunteer' | 'hostel') => {
+  const onSignupComplete = async (data: any, type: "volunteer" | "hostel") => {
     const signupData = { ...data, userType: type };
     const success = await signup(signupData);
     if (success) {
-      navigate('/dashboard');
+      navigate("/dashboard");
     }
   };
 
   const onBack = () => {
-    if (currentStep === 'choice') {
-      navigate('/');
+    if (currentStep === "choice") {
+      navigate("/");
     } else {
-      setCurrentStep('choice');
+      setCurrentStep("choice");
     }
   };
 
   const renderCurrentStep = () => {
     switch (currentStep) {
-      case 'choice':
+      case "choice":
         return <SignupChoice onChoice={onChoice} onBack={onBack} />;
-      case 'volunteer-signup':
-        return <SignupFlow onComplete={(data) => onSignupComplete(data, 'volunteer')} onBack={onBack} />;
-      case 'hostel-signup':
-        return <HostelSignupFlow onComplete={(data) => onSignupComplete(data, 'hostel')} onBack={onBack} />;
+      case "volunteer-signup":
+        return (
+          <SignupFlow
+            onComplete={(data) => onSignupComplete(data, "volunteer")}
+            onBack={onBack}
+          />
+        );
+      case "hostel-signup":
+        return (
+          <HostelSignupFlow
+            onComplete={(data) => onSignupComplete(data, "hostel")}
+            onBack={onBack}
+          />
+        );
       default:
         return <SignupChoice onChoice={onChoice} onBack={onBack} />;
     }
