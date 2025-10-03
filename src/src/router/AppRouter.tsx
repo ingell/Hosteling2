@@ -5,6 +5,7 @@ import { useAdmin } from '../contexts/AdminContext';
 
 // Pages
 import { LandingPage } from '../pages/LandingPage';
+import { PreLaunchPage } from '../pages/PreLaunchPage';
 import { BrowsePage } from '../pages/BrowsePage';
 import { LoginPage } from '../pages/LoginPage';
 import { SignupPage } from '../pages/SignupPage';
@@ -55,9 +56,11 @@ export const AppRouter: React.FC = () => {
   return (
     <Routes>
       {/* Public routes */}
-      <Route path="/" element={
+      <Route path="/" element={isLoggedIn ? <Navigate to="/dashboard" replace /> : <PreLaunchPage />} />
+      
+      <Route path="/launch" element={
         <Layout>
-          {isLoggedIn ? <Navigate to="/dashboard" replace /> : <LandingPage />}
+          <LandingPage />
         </Layout>
       } />
       

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { LoginFlowPage } from '../../components/pages/auth/LoginFlowPage';
+import { LoginFlow } from '../../components/login-flow';
 import { useApp } from '../shared/contexts/AppContext';
 
 export const LoginPage: React.FC = () => {
@@ -30,7 +30,7 @@ export const LoginPage: React.FC = () => {
   };
 
   return (
-    <LoginFlowPage 
+    <LoginFlow 
       onLogin={onLogin}
       onBack={onBack}
       onSignupRedirect={onSignupRedirect}
