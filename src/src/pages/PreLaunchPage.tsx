@@ -284,7 +284,7 @@ export const PreLaunchPage: React.FC = () => {
               <img
                 src={hostelingLogo}
                 alt="Hosteling Logo"
-                className="h-8 w-auto backdrop-black"
+                className="h-8 w-auto"
               />
               <span className="text-3xl text-gray-900">hosteling</span>
             </div>
