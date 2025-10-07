@@ -1,24 +1,49 @@
-import React, { useState } from 'react';
-import { Button } from '../../components/ui/button';
-import { Input } from '../../components/ui/input';
-import { Label } from '../../components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../../components/ui/select';
-import { Checkbox } from '../../components/ui/checkbox';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../../components/ui/card';
-import { Badge } from '../../components/ui/badge';
-import { Loader2, Mail, Phone, User, Users, Building, Heart, Globe, CheckCircle, Share2, Twitter, Facebook, Instagram } from 'lucide-react';
-import { toast } from 'sonner@2.0.3';
-import { useLanguage } from '../shared/contexts/LanguageContext';
-import PrelaunchService from '../services/prelaunchService';
-import { analyticsService } from '../services/analyticsService';
-import hostelingLogo from 'figma:asset/aa5bb70d18a6d311efb06650e925f5d317d97ff9.png';
+import {
+  Building,
+  CheckCircle,
+  Facebook,
+  Globe,
+  Heart,
+  Instagram,
+  Loader2,
+  Mail,
+  Phone,
+  Twitter,
+  User,
+  Users,
+} from "lucide-react";
+import React, { useState } from "react";
+import { toast } from "sonner";
+import hostelingLogo from "../../assets/LogoColored.png";
+import { Badge } from "../../components/ui/badge";
+import { Button } from "../../components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "../../components/ui/card";
+import { Checkbox } from "../../components/ui/checkbox";
+import { Input } from "../../components/ui/input";
+import { Label } from "../../components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../../components/ui/select";
+import { analyticsService } from "../services/analyticsService";
+import PrelaunchService from "../services/prelaunchService";
+import { useLanguage } from "../shared/contexts/LanguageContext";
 
 interface FormData {
   firstName: string;
   lastName: string;
   email: string;
   phone: string;
-  userType: 'volunteer' | 'hostel' | '';
+  userType: "volunteer" | "hostel" | "";
   consent: boolean;
 }
 
@@ -34,11 +59,11 @@ interface FormErrors {
 export const PreLaunchPage: React.FC = () => {
   const { t } = useLanguage();
   const [formData, setFormData] = useState<FormData>({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    userType: '',
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    userType: "",
     consent: false,
   });
   const [errors, setErrors] = useState<FormErrors>({});
@@ -48,7 +73,7 @@ export const PreLaunchPage: React.FC = () => {
   // Track page view on component mount
   React.useEffect(() => {
     analyticsService.trackPageView({
-      pageName: 'PreLaunch Landing Page',
+      pageName: "PreLaunch Landing Page",
       url: window.location.href,
     });
   }, []);
@@ -60,31 +85,31 @@ export const PreLaunchPage: React.FC = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.firstName.trim()) {
-      newErrors.firstName = 'First name is required';
+      newErrors.firstName = "First name is required";
     }
 
     if (!formData.lastName.trim()) {
-      newErrors.lastName = 'Last name is required';
+      newErrors.lastName = "Last name is required";
     }
 
     if (!formData.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = "Email is required";
     } else if (!validateEmail(formData.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = "Please enter a valid email address";
     }
 
     if (!formData.phone.trim()) {
-      newErrors.phone = 'Phone number is required';
+      newErrors.phone = "Phone number is required";
     } else if (!validatePhone(formData.phone)) {
-      newErrors.phone = 'Please enter a valid phone number';
+      newErrors.phone = "Please enter a valid phone number";
     }
 
     if (!formData.userType) {
-      newErrors.userType = 'Please select your user type';
+      newErrors.userType = "Please select your user type";
     }
 
     if (!formData.consent) {
-      newErrors.consent = 'You must consent to receive communications';
+      newErrors.consent = "You must consent to receive communications";
     }
 
     setErrors(newErrors);
@@ -93,7 +118,7 @@ export const PreLaunchPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!validateForm()) {
       return;
     }
@@ -107,61 +132,71 @@ export const PreLaunchPage: React.FC = () => {
         lastName: formData.lastName,
         email: formData.email,
         phone: formData.phone,
-        userType: formData.userType as 'volunteer' | 'hostel',
+        userType: formData.userType as "volunteer" | "hostel",
         consent: formData.consent,
       });
-      
+
       if (response.success) {
         setIsSubmitted(true);
         toast.success(response.message);
-        
+
         // Track successful signup
         analyticsService.trackPrelaunchSignup(
-          formData.userType as 'volunteer' | 'hostel',
+          formData.userType as "volunteer" | "hostel",
           formData.email
         );
-        analyticsService.trackFormInteraction('submit_success');
+        analyticsService.trackFormInteraction("submit_success");
       } else {
         toast.error(response.message);
-        analyticsService.trackFormInteraction('submit_error');
+        analyticsService.trackFormInteraction("submit_error");
       }
     } catch (error) {
-      console.error('Submission error:', error);
-      toast.error('Something went wrong. Please try again.');
+      console.error("Submission error:", error);
+      toast.error("Something went wrong. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  const handleInputChange = (field: keyof FormData, value: string | boolean) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+  const handleInputChange = (
+    field: keyof FormData,
+    value: string | boolean
+  ) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({ ...prev, [field]: undefined }));
+      setErrors((prev) => ({ ...prev, [field]: undefined }));
     }
   };
 
   const shareUrl = window.location.href;
-  const shareText = 'Join the Hosteling community - connecting volunteers with hostels worldwide!';
+  const shareText =
+    "Join the Hosteling community - connecting volunteers with hostels worldwide!";
 
   const handleShare = (platform: string) => {
     analyticsService.trackSocialShare(platform);
-    
-    let url = '';
+
+    let url = "";
     switch (platform) {
-      case 'twitter':
-        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareText)}&url=${encodeURIComponent(shareUrl)}`;
+      case "twitter":
+        url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          shareText
+        )}&url=${encodeURIComponent(shareUrl)}`;
         break;
-      case 'facebook':
-        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`;
+      case "facebook":
+        url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          shareUrl
+        )}`;
         break;
-      case 'instagram':
+      case "instagram":
         // Instagram doesn't support direct URL sharing, so we'll copy to clipboard
         navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
-        toast.success('Link copied to clipboard! Share it on your Instagram story.');
+        toast.success(
+          "Link copied to clipboard! Share it on your Instagram story."
+        );
         return;
     }
-    window.open(url, '_blank', 'width=600,height=400');
+    window.open(url, "_blank", "noopener,noreferrer,width=600,height=400");
   };
 
   if (isSubmitted) {
@@ -173,35 +208,41 @@ export const PreLaunchPage: React.FC = () => {
               <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
               <h1 className="text-3xl mb-4 text-gray-900">Thank You!</h1>
               <p className="text-lg text-gray-600 mb-6">
-                You're now on our early access list. We'll notify you as soon as Hosteling launches!
+                You're now on our early access list. We'll notify you as soon as
+                Hosteling launches!
               </p>
               <div className="flex justify-center space-x-4 mb-6">
-                <Badge variant="secondary" className="bg-orange-100 text-orange-800">
+                <Badge
+                  variant="secondary"
+                  className="bg-orange-100 text-orange-800"
+                >
                   <Users className="w-4 h-4 mr-1" />
-                  {formData.userType === 'volunteer' ? 'Volunteer' : 'Hostel'}
+                  {formData.userType === "volunteer" ? "Volunteer" : "Hostel"}
                 </Badge>
               </div>
             </div>
-            
+
             <div className="border-t pt-6">
-              <p className="text-sm text-gray-600 mb-4">Help us spread the word!</p>
+              <p className="text-sm text-gray-600 mb-4">
+                Help us spread the word!
+              </p>
               <div className="flex justify-center gap-2">
                 <button
-                  onClick={() => handleShare('twitter')}
+                  onClick={() => handleShare("twitter")}
                   className="group flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                   title="Share on Twitter"
                 >
                   <Twitter className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleShare('facebook')}
+                  onClick={() => handleShare("facebook")}
                   className="group flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                   title="Share on Facebook"
                 >
                   <Facebook className="w-4 h-4" />
                 </button>
                 <button
-                  onClick={() => handleShare('instagram')}
+                  onClick={() => handleShare("instagram")}
                   className="group flex items-center justify-center w-8 h-8 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
                   title="Copy link for Instagram"
                 >
@@ -210,17 +251,17 @@ export const PreLaunchPage: React.FC = () => {
               </div>
             </div>
           </div>
-          
+
           <Button
             variant="ghost"
             onClick={() => {
               setIsSubmitted(false);
               setFormData({
-                firstName: '',
-                lastName: '',
-                email: '',
-                phone: '',
-                userType: '',
+                firstName: "",
+                lastName: "",
+                email: "",
+                phone: "",
+                userType: "",
                 consent: false,
               });
             }}
@@ -240,10 +281,10 @@ export const PreLaunchPage: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-center items-center h-20">
             <div className="flex items-center space-x-4">
-              <img 
-                src={hostelingLogo} 
-                alt="Hosteling Logo" 
-                className="h-16 w-auto"
+              <img
+                src={hostelingLogo}
+                alt="Hosteling Logo"
+                className="h-8 w-auto"
               />
               <span className="text-3xl text-gray-900">hosteling</span>
             </div>
@@ -263,7 +304,8 @@ export const PreLaunchPage: React.FC = () => {
                 Be the first to know when we launch!
               </h1>
               <p className="text-xl text-gray-600 mb-8 leading-relaxed">
-                Join thousands of adventurous travelers and welcoming hostels preparing for the future of volunteer exchange.
+                Join thousands of adventurous travelers and welcoming hostels
+                preparing for the future of volunteer exchange.
               </p>
             </div>
 
@@ -275,21 +317,32 @@ export const PreLaunchPage: React.FC = () => {
                   <Heart className="w-6 h-6 text-orange-500 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-900">For Volunteers:</p>
-                    <p className="text-gray-600 text-sm">Exchange your skills for free accommodation at hostels worldwide. Work a few hours a day and immerse yourself in local culture.</p>
+                    <p className="text-gray-600 text-sm">
+                      Exchange your skills for free accommodation at hostels
+                      worldwide. Work a few hours a day and immerse yourself in
+                      local culture.
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <Building className="w-6 h-6 text-yellow-500 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-900">For Hostels:</p>
-                    <p className="text-gray-600 text-sm">Find reliable, enthusiastic volunteers to help with daily operations while creating a vibrant international community.</p>
+                    <p className="text-gray-600 text-sm">
+                      Find reliable, enthusiastic volunteers to help with daily
+                      operations while creating a vibrant international
+                      community.
+                    </p>
                   </div>
                 </div>
                 <div className="flex items-start space-x-3">
                   <Globe className="w-6 h-6 text-green-500 mt-1 flex-shrink-0" />
                   <div>
                     <p className="text-gray-900">Global Community:</p>
-                    <p className="text-gray-600 text-sm">Connect with like-minded travelers, share experiences, and build lasting friendships across continents.</p>
+                    <p className="text-gray-600 text-sm">
+                      Connect with like-minded travelers, share experiences, and
+                      build lasting friendships across continents.
+                    </p>
                   </div>
                 </div>
               </div>
@@ -310,7 +363,8 @@ export const PreLaunchPage: React.FC = () => {
               <CardHeader className="text-center bg-gradient-to-r from-orange-500 to-yellow-500 text-white rounded-t-lg">
                 <CardTitle className="text-2xl">Get Early Access</CardTitle>
                 <CardDescription className="text-orange-100">
-                  Join our waiting list and be among the first to experience Hosteling
+                  Join our waiting list and be among the first to experience
+                  Hosteling
                 </CardDescription>
               </CardHeader>
               <CardContent className="p-8">
@@ -326,12 +380,16 @@ export const PreLaunchPage: React.FC = () => {
                         id="firstName"
                         type="text"
                         value={formData.firstName}
-                        onChange={(e) => handleInputChange('firstName', e.target.value)}
-                        className={errors.firstName ? 'border-red-500' : ''}
+                        onChange={(e) =>
+                          handleInputChange("firstName", e.target.value)
+                        }
+                        className={errors.firstName ? "border-red-500" : ""}
                         placeholder="John"
                       />
                       {errors.firstName && (
-                        <p className="text-red-500 text-sm">{errors.firstName}</p>
+                        <p className="text-red-500 text-sm">
+                          {errors.firstName}
+                        </p>
                       )}
                     </div>
                     <div className="space-y-2">
@@ -342,12 +400,16 @@ export const PreLaunchPage: React.FC = () => {
                         id="lastName"
                         type="text"
                         value={formData.lastName}
-                        onChange={(e) => handleInputChange('lastName', e.target.value)}
-                        className={errors.lastName ? 'border-red-500' : ''}
+                        onChange={(e) =>
+                          handleInputChange("lastName", e.target.value)
+                        }
+                        className={errors.lastName ? "border-red-500" : ""}
                         placeholder="Doe"
                       />
                       {errors.lastName && (
-                        <p className="text-red-500 text-sm">{errors.lastName}</p>
+                        <p className="text-red-500 text-sm">
+                          {errors.lastName}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -362,8 +424,10 @@ export const PreLaunchPage: React.FC = () => {
                       id="email"
                       type="email"
                       value={formData.email}
-                      onChange={(e) => handleInputChange('email', e.target.value)}
-                      className={errors.email ? 'border-red-500' : ''}
+                      onChange={(e) =>
+                        handleInputChange("email", e.target.value)
+                      }
+                      className={errors.email ? "border-red-500" : ""}
                       placeholder="john@example.com"
                     />
                     {errors.email && (
@@ -381,8 +445,10 @@ export const PreLaunchPage: React.FC = () => {
                       id="phone"
                       type="tel"
                       value={formData.phone}
-                      onChange={(e) => handleInputChange('phone', e.target.value)}
-                      className={errors.phone ? 'border-red-500' : ''}
+                      onChange={(e) =>
+                        handleInputChange("phone", e.target.value)
+                      }
+                      className={errors.phone ? "border-red-500" : ""}
                       placeholder="+1 (555) 123-4567"
                     />
                     {errors.phone && (
@@ -393,17 +459,20 @@ export const PreLaunchPage: React.FC = () => {
                   {/* User Type */}
                   <div className="space-y-2">
                     <Label className="text-gray-700">
-                      <Users className="w-4 h-4 inline mr-1" />
-                      I am a...
+                      <Users className="w-4 h-4 inline mr-1" />I am a...
                     </Label>
-                    <Select 
-                      value={formData.userType} 
+                    <Select
+                      value={formData.userType}
                       onValueChange={(value) => {
-                        handleInputChange('userType', value);
-                        analyticsService.trackUserTypeSelection(value as 'volunteer' | 'hostel');
+                        handleInputChange("userType", value);
+                        analyticsService.trackUserTypeSelection(
+                          value as "volunteer" | "hostel"
+                        );
                       }}
                     >
-                      <SelectTrigger className={errors.userType ? 'border-red-500' : ''}>
+                      <SelectTrigger
+                        className={errors.userType ? "border-red-500" : ""}
+                      >
                         <SelectValue placeholder="Select your type" />
                       </SelectTrigger>
                       <SelectContent>
@@ -412,7 +481,9 @@ export const PreLaunchPage: React.FC = () => {
                             <Heart className="w-4 h-4 mr-2 text-orange-500" />
                             <div>
                               <p>Volunteer</p>
-                              <p className="text-sm text-gray-500">Looking to travel and work at hostels</p>
+                              <p className="text-sm text-gray-500">
+                                Looking to travel and work at hostels
+                              </p>
                             </div>
                           </div>
                         </SelectItem>
@@ -421,7 +492,9 @@ export const PreLaunchPage: React.FC = () => {
                             <Building className="w-4 h-4 mr-2 text-yellow-500" />
                             <div>
                               <p>Hostel Owner/Manager</p>
-                              <p className="text-sm text-gray-500">Looking to host volunteers</p>
+                              <p className="text-sm text-gray-500">
+                                Looking to host volunteers
+                              </p>
                             </div>
                           </div>
                         </SelectItem>
@@ -438,12 +511,18 @@ export const PreLaunchPage: React.FC = () => {
                       <Checkbox
                         id="consent"
                         checked={formData.consent}
-                        onCheckedChange={(checked) => handleInputChange('consent', checked as boolean)}
-                        className={errors.consent ? 'border-red-500' : ''}
+                        onCheckedChange={(checked) =>
+                          handleInputChange("consent", checked as boolean)
+                        }
+                        className={errors.consent ? "border-red-500" : ""}
                       />
-                      <Label htmlFor="consent" className="text-sm text-gray-600 leading-relaxed cursor-pointer">
-                        I consent to receive communications about Hosteling's launch and updates. 
-                        You can unsubscribe at any time. (Required for GDPR compliance)
+                      <Label
+                        htmlFor="consent"
+                        className="text-sm text-gray-600 leading-relaxed cursor-pointer"
+                      >
+                        I consent to receive communications about Hosteling's
+                        launch and updates. You can unsubscribe at any time.
+                        (Required for GDPR compliance)
                       </Label>
                     </div>
                     {errors.consent && (
@@ -463,7 +542,7 @@ export const PreLaunchPage: React.FC = () => {
                         Signing You Up...
                       </>
                     ) : (
-                      'Get Early Access'
+                      "Get Early Access"
                     )}
                   </Button>
                 </form>
@@ -474,31 +553,35 @@ export const PreLaunchPage: React.FC = () => {
 
         {/* Social Sharing Section */}
         <div className="mt-16 text-center">
-          <p className="text-gray-600 mb-6">Help us spread the word and join our community!</p>
+          <p className="text-gray-600 mb-6">
+            Help us spread the word and join our community!
+          </p>
           <div className="flex justify-center gap-3">
             <button
-              onClick={() => handleShare('twitter')}
+              onClick={() => handleShare("twitter")}
               className="group flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-400 to-blue-500 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               title="Share on Twitter"
             >
               <Twitter className="w-4 h-4" />
             </button>
             <button
-              onClick={() => handleShare('facebook')}
+              onClick={() => handleShare("facebook")}
               className="group flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-blue-600 to-blue-700 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               title="Share on Facebook"
             >
               <Facebook className="w-4 h-4" />
             </button>
             <button
-              onClick={() => handleShare('instagram')}
+              onClick={() => handleShare("instagram")}
               className="group flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-pink-500 via-red-500 to-yellow-500 text-white shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-200"
               title="Copy link for Instagram"
             >
               <Instagram className="w-4 h-4" />
             </button>
           </div>
-          <p className="text-sm text-gray-500 mt-4">Click Instagram to copy the link for your story!</p>
+          <p className="text-sm text-gray-500 mt-4">
+            Click Instagram to copy the link for your story!
+          </p>
         </div>
       </div>
     </div>
