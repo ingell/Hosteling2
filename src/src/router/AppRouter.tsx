@@ -3,27 +3,35 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { useApp } from '../shared/contexts/AppContext';
 import { useAdmin } from '../contexts/AdminContext';
 
-// Pages
-import { LandingPage } from '../pages/LandingPage';
-import { PreLaunchPage } from '../pages/PreLaunchPage';
-import { BrowsePage } from '../pages/BrowsePage';
-import { LoginPage } from '../pages/LoginPage';
-import { SignupPage } from '../pages/SignupPage';
-import { DashboardPage } from '../pages/DashboardPage';
-import { HostelDetailPage } from '../pages/HostelDetailPage';
-import { HowItWorksPage } from '../pages/HowItWorksPage';
-import { ForHostelsPage } from '../pages/ForHostelsPage';
-import { VolunteerCommunityPage } from '../pages/VolunteerCommunityPage';
-import { SafetyGuidelinesPage } from '../pages/SafetyGuidelinesPage';
-import { AboutPage } from '../pages/AboutPage';
-import { HelpCenterPage } from '../pages/HelpCenterPage';
-import { ContactPage } from '../pages/ContactPage';
-import { TermsPage } from '../pages/TermsPage';
-import { PrivacyPage } from '../pages/PrivacyPage';
+// Landing Pages
+import { LandingPage } from '../pages/landing/LandingPage';
+import { PreLaunchPage } from '../pages/landing/PreLaunchPage';
+
+// Auth Pages
+import { LoginPage } from '../pages/auth/login/LoginPage';
+import { SignupPage } from '../pages/auth/signup/SignupPage';
+
+// Dashboard Pages
+import { DashboardPage } from '../pages/dashboard/DashboardPage';
+import { BrowsePage } from '../pages/dashboard/browse/BrowsePage';
+
+// Hostel Pages
+import { HostelDetailPage } from '../pages/hostel/HostelDetailPage';
+
+// Static/Informational Pages
+import { HowItWorksPage } from '../pages/static/HowItWorksPage';
+import { ForHostelsPage } from '../pages/static/ForHostelsPage';
+import { VolunteerCommunityPage } from '../pages/static/VolunteerCommunityPage';
+import { SafetyGuidelinesPage } from '../pages/static/SafetyGuidelinesPage';
+import { AboutPage } from '../pages/static/AboutPage';
+import { HelpCenterPage } from '../pages/static/HelpCenterPage';
+import { ContactPage } from '../pages/static/ContactPage';
+import { TermsPage } from '../pages/static/TermsPage';
+import { PrivacyPage } from '../pages/static/PrivacyPage';
 
 // Admin Pages
-import { AdminLoginPage } from '../pages/AdminLoginPage';
-import { AdminDashboardPage } from '../pages/AdminDashboardPage';
+import { AdminLoginPage } from '../pages/admin/AdminLoginPage';
+import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 
 // Layouts
 import { Layout } from '../layouts/Layout';
